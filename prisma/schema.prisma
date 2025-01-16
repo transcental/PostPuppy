@@ -1,0 +1,46 @@
+generator client {
+  provider             = "prisma-client-py"
+  interface            = "asyncio"
+  recursive_type_depth = 5
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 String   @id @unique
+  subscribedChannels String[]
+
+  shipments Shipment[]
+  viewerUrl String?
+  apiUrl String?
+}
+
+enum ShipmentType {
+  WarehouseShipment
+  HSHQMailShipment
+  HSRawPendingAGHShipment
+  HS3rdPartyPhysicalShipment
+  HSMinutemanShipment
+  BobaDropsShipment
+  SprigShipment
+  Other
+}
+
+model Shipment {
+  id             String       @id @unique
+  type           ShipmentType @default(Other)
+  typeText       String
+  title          String
+  shipped        Boolean
+  icon           String
+  trackingLink   String?
+  trackingNumber String?
+  status         String
+  description    String[]
+  record         String?
+  User           User?        @relation(fields: [userId], references: [id])
+  userId         String?
+}

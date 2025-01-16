@@ -1,0 +1,5 @@
+.env
+prisma/migrations
+.venv
+.ropeproject
+__pycache__
