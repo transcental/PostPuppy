@@ -16,8 +16,6 @@ async def endpoint(req: Request):
 
 app = Starlette(
     debug=True if env.environment != "production" else False,
-    routes=[
-        Route(path="/slack/events", endpoint=endpoint, methods=["POST"])
-    ],
-    lifespan=main
+    routes=[Route(path="/slack/events", endpoint=endpoint, methods=["POST"])],
+    lifespan=main,
 )

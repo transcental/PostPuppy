@@ -1,8 +1,10 @@
+import os
+
+import aiohttp
 from dotenv import load_dotenv
 from slack_sdk.web.async_client import AsyncWebClient
+
 from prisma import Prisma
-import aiohttp
-import os
 
 load_dotenv()
 
@@ -23,7 +25,7 @@ class Environment:
 
         self.db = Prisma()
 
-        self.aiohttp_session: aiohttp.ClientSession = None # type: ignore - initialised in async_init which happens at program start
+        self.aiohttp_session: aiohttp.ClientSession = None  # type: ignore - initialised in async_init which happens at program start
         self.slack_client = AsyncWebClient(token=self.slack_bot_token)
 
     async def async_init(self):
@@ -34,5 +36,6 @@ class Environment:
         """Closes the aiohttp session"""
         if self.aiohttp_session:
             await self.aiohttp_session.close()
+
 
 env = Environment()

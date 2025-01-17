@@ -1,10 +1,12 @@
 import asyncio
 import contextlib
 import logging
+
 import uvicorn
-from starlette.applications import Starlette
 import uvloop
 from dotenv import load_dotenv
+from starlette.applications import Starlette
+
 from utils.env import env
 
 logging.basicConfig(
@@ -14,6 +16,7 @@ logging.basicConfig(
 load_dotenv()
 
 asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
 
 @contextlib.asynccontextmanager
 async def main(_app: Starlette):
