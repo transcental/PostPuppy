@@ -79,6 +79,9 @@ def find_diff(old: list[dict], new: list[dict]):
                 if key not in old_shipment:
                     updated_keys.append(key)
 
+            if not updated_keys:
+                continue
+
             if new_shipment.get("shipped", False) and (
                 "tracking_number" in updated_keys or "tracking_link" in updated_keys
             ):
