@@ -56,7 +56,7 @@ async def channels_callback(ack: AsyncAck, body, client: AsyncWebClient):
             logging.error(f"Failed to send message to {channel} ({user_id}\n{e}")
             await env.slack_client.chat_postMessage(
                 channel=user_id,
-                text=f"haiii :3\nlooks like i can't send to new channel <#{channel}>, please make sure i'm in the channel uwu",
+                text=f"haiii :3\nlooks like i can't send to channel <#{channel}>, please make sure i'm in the channel uwu",
                 blocks=[
                     {
                         "type": "section",
@@ -64,7 +64,16 @@ async def channels_callback(ack: AsyncAck, body, client: AsyncWebClient):
                             "type": "mrkdwn",
                             "text": f"haiii :3\nlooks like i can't send to <#{channel}>, please make sure you added me to the channel uwu :3",
                         },
-                    }
+                    },
+                    {
+                        "type": "context",
+                        "elements": [
+                            {
+                                "type": "mrkdwn",
+                                "text": "_wrrf, wrrrrrrf (sad barking noises)_",
+                            }
+                        ],
+                    },
                 ],
             )
 
@@ -78,7 +87,7 @@ async def channels_callback(ack: AsyncAck, body, client: AsyncWebClient):
                         "type": "section",
                         "text": {
                             "type": "mrkdwn",
-                            "text": ":neodog_sob: i'm not watching your shipments anymore :c",
+                            "text": ":neodog_sob: _arf! arf!_ i'm not watching your shipments anymore :c",
                         },
                     },
                     {

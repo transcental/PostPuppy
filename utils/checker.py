@@ -50,18 +50,45 @@ async def check_for_shipment_updates(delay: int = 10):
                     is_channel = channel_info.get("channel", {}).get("is_channel")
                 for msg in differences:
                     message = msg["pub_msg"] if is_channel else msg["msg"]
-                    await env.slack_client.chat_postMessage(
-                        channel=channel,
-                        text="Your shipments have been updated!",
-                        blocks=[
-                            {
-                                "type": "section",
-                                "text": {
-                                    "type": "mrkdwn",
-                                    "text": message,
+                    try:
+                        await env.slack_client.chat_postMessage(
+                            channel=channel,
+                            text="Your shipments have been updated!",
+                            blocks=[
+                                {
+                                    "type": "section",
+                                    "text": {
+                                        "type": "mrkdwn",
+                                        "text": message,
+                                    },
+                                }
+                            ],
+                        )
+                    except Exception as e:
+                        logging.error(
+                            f"Failed to send update message to {channel} ({user.id}\n{e}"
+                        )
+                        await env.slack_client.chat_postMessage(
+                            channel=user.id,
+                            text=f"haiii :3\nlooks like i can't send to channel <#{channel}>, please make sure i'm in the channel uwu",
+                            blocks=[
+                                {
+                                    "type": "section",
+                                    "text": {
+                                        "type": "mrkdwn",
+                                        "text": f"haiii :3\nlooks like i can't send to <#{channel}>, please make sure you added me to the channel uwu :3",
+                                    },
                                 },
-                            }
-                        ],
-                    )
+                                {
+                                    "type": "context",
+                                    "elements": [
+                                        {
+                                            "type": "mrkdwn",
+                                            "text": "_wrrf, wrrrrrrf (sad barking noises)_",
+                                        }
+                                    ],
+                                },
+                            ],
+                        )
 
         await asyncio.sleep(delay)
