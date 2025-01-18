@@ -35,6 +35,68 @@ async def channels_callback(ack: AsyncAck, body, client: AsyncWebClient):
     actions = view["state"]["values"]
     selected_channels = actions["channels"]["channels_select"]["selected_conversations"]
 
+    user = await env.db.user.find_first(where={"id": user_id})
+    if not user:
+        return
+    current_channels = user.subscribedChannels or []
+    new_channels = [
+        channel for channel in selected_channels if channel not in current_channels
+    ]
+    removed_channels = [
+        channel for channel in current_channels if channel not in selected_channels
+    ]
+
+    for channel in new_channels:
+        try:
+            await env.slack_client.chat_postMessage(
+                channel=channel,
+                text="Wrrf, wrrf, wrrf!!!! wrrf!\n_hai! i'm watching your shipments for you now :3_",
+            )
+        except Exception as e:
+            logging.error(f"Failed to send message to {channel} ({user_id}\n{e}")
+            await env.slack_client.chat_postMessage(
+                channel=user_id,
+                text=f"haiii :3\nlooks like i can't send to new channel <#{channel}>, please make sure i'm in the channel uwu",
+                blocks=[
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": f"haiii :3\nlooks like i can't send to <#{channel}>, please make sure you added me to the channel uwu :3",
+                        },
+                    }
+                ],
+            )
+
+    for channel in removed_channels:
+        try:
+            await env.slack_client.chat_postMessage(
+                channel=channel,
+                text=":neodog_sob: i'm not watching your shipments anymore :c\n_wrrf, wrrrrrrf (sad barking noises)_",
+                blocks=[
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": ":neodog_sob: i'm not watching your shipments anymore :c",
+                        },
+                    },
+                    {
+                        "type": "context",
+                        "elements": [
+                            {
+                                "type": "mrkdwn",
+                                "text": "_wrrf, wrrrrrrf (sad barking noises)_",
+                            }
+                        ],
+                    },
+                ],
+            )
+        except Exception as e:
+            logging.error(
+                f"Failed to send message to removed channel {channel} ({user_id}\n{e}"
+            )
+
     await env.db.user.update(
         where={"id": user_id}, data={"subscribedChannels": {"set": selected_channels}}
     )

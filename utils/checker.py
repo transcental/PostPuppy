@@ -25,11 +25,7 @@ async def check_for_shipment_updates(delay: int = 10):
                 continue
 
             if old_shipments == "[{}]":
-                for channel in user.subscribedChannels:
-                    await env.slack_client.chat_postMessage(
-                        channel=channel,
-                        text=":neodog_box: hai! i'm watching your shipments for you now :3",
-                    )
+                # First run, skip
                 continue
 
             try:
