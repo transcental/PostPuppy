@@ -54,6 +54,7 @@ async def check_for_shipment_updates(delay: int = 10):
                         await env.slack_client.chat_postMessage(
                             channel=channel,
                             text="Your shipments have been updated!",
+                            unfurl_links=False,
                             blocks=[
                                 {
                                     "type": "section",
