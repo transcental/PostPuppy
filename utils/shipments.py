@@ -62,10 +62,10 @@ def find_diff(old: list[dict], new: list[dict]):
 
         if old_shipment and not new_shipment:
             # shipment was removed
-            msg = f':neodog_sob: Your order of *"{old_shipment.get("title", shipment_id)}"* has been cancelled'
+            msg = f':neodog_sob: arf arf~ order of *"{old_shipment.get("title", shipment_id)}"* has been cancelled :c i hope that\'s okay master! _wrrf, wrrf!_'
         elif new_shipment and not old_shipment:
             # shipment was created
-            msg = f':neodog_box: Shipment of *"{new_shipment.get("title", shipment_id)}"* on the way! _({new_shipment.get("type_text", new_shipment.get("type", "unknown_status").replace("_", "").title())}!)_'
+            msg = f':neocat_box: arf arf~ your package, *"{new_shipment.get("title", shipment_id)}"*, is on its way, wrrf! i found these fancy terms, not sure what it means though, rrf! _({new_shipment.get("type_text", new_shipment.get("type", "unknown_status").replace("_", " ").title())}!)_'
         else:
             # shipment was updated
             updated_keys = []
