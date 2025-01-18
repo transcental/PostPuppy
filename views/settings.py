@@ -36,7 +36,7 @@ async def generate_settings(user_id: str):
                 "type": "header",
                 "text": {
                     "type": "plain_text",
-                    "text": ":neodog_solder: Shipment Stalker Settings",
+                    "text": ":neodog_solder: post puppy settings",
                 },
             },
             *url_input_block,
@@ -52,12 +52,12 @@ async def generate_settings(user_id: str):
             {
                 "type": "section",
                 "block_id": "channels",
-                "text": {"type": "mrkdwn", "text": "Notification Channels"},
+                "text": {"type": "mrkdwn", "text": "Barking Channels"},
                 "accessory": {
                     "type": "multi_conversations_select",
                     "placeholder": {
                         "type": "plain_text",
-                        "text": "Select conversations to notify",
+                        "text": "Select conversations to bark in",
                         "emoji": True,
                     },
                     "initial_conversations": user.subscribedChannels or [],
@@ -69,7 +69,7 @@ async def generate_settings(user_id: str):
                 "elements": [
                     {
                         "type": "mrkdwn",
-                        "text": "The channel Shipment Stalker will send notifications to when a shipment is updated or added.",
+                        "text": "The channel Post Puppy will bark in when a shipment is updated or added.",
                     }
                 ],
             },
