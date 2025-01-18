@@ -3,6 +3,7 @@ import re
 
 from slack_bolt.async_app import AsyncAck
 from slack_bolt.async_app import AsyncApp
+from slack_sdk.web.async_client import AsyncWebClient
 
 from utils.env import env
 from views.home import generate_home
@@ -12,14 +13,14 @@ app = AsyncApp(token=env.slack_bot_token, signing_secret=env.slack_signing_secre
 
 
 @app.event("app_home_opened")
-async def update_home_tab(client, event, logger):
+async def update_home_tab(client: AsyncWebClient, event, logger):
     user_id = event["user"]
     view = await generate_home(user_id)
     await client.views_publish(user_id=user_id, view=view)
 
 
 @app.action("open_settings")
-async def open_settings(ack: AsyncAck, body, client):
+async def open_settings(ack: AsyncAck, body, client: AsyncWebClient):
     await ack()
     user_id = body["user"]["id"]
     view = await generate_settings(user_id)
@@ -27,12 +28,12 @@ async def open_settings(ack: AsyncAck, body, client):
 
 
 @app.action("channels_select")
-async def channels_callback(ack: AsyncAck, body, client):
+async def channels_callback(ack: AsyncAck, body, client: AsyncWebClient):
     await ack()
     user_id = body["user"]["id"]
     view = body["view"]
     actions = view["state"]["values"]
-    selected_channels = actions["channels"]["channels"]["selected_conversations"]
+    selected_channels = actions["channels"]["channels_select"]["selected_conversations"]
 
     await env.db.user.update(
         where={"id": user_id}, data={"subscribedChannels": {"set": selected_channels}}
@@ -40,7 +41,7 @@ async def channels_callback(ack: AsyncAck, body, client):
 
 
 @app.view("settings_callback")
-async def settings_callback(ack: AsyncAck, body, client):
+async def settings_callback(ack: AsyncAck, body, client: AsyncWebClient):
     logging.info("URL Callback")
     user_id = body["user"]["id"]
     view = body["view"]
@@ -60,7 +61,11 @@ async def settings_callback(ack: AsyncAck, body, client):
         data={"viewerUrl": url, "apiUrl": url.replace("shipments", "jason")},
     )
 
+    return await client.views_publish(
+        user_id=user_id, view=await generate_home(user_id)
+    )
+
 
 @app.action("link")
-async def link_callback(ack: AsyncAck, body, client):
+async def link_callback(ack: AsyncAck, body, client: AsyncWebClient):
     await ack()

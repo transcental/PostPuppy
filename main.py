@@ -7,6 +7,7 @@ import uvloop
 from dotenv import load_dotenv
 from starlette.applications import Starlette
 
+from utils.checker import check_for_shipment_updates
 from utils.env import env
 
 logging.basicConfig(
@@ -22,6 +23,7 @@ asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 async def main(_app: Starlette):
     await env.async_init()
     await env.db.connect()
+    asyncio.create_task(check_for_shipment_updates())
     try:
         yield
     finally:
