@@ -8,30 +8,34 @@ from utils.shipments import get_shipments
 
 
 async def check_for_shipment_updates(delay: int = 10):
-    users = await env.db.user.find_many()
     while True:
+        users = await env.db.user.find_many()
         for user in users:
-            if not user.apiUrl:
+            if not user.subscribedChannels or not user.apiUrl:
                 continue
+
             logging.info(f"Checking for user {user.id}")
-            old_shipments = json.dumps(user.shipments) or ""
+            old_shipments = user.shipments if user.shipments else "[{}]"
             new_shipments = json.dumps(await get_shipments(user.id, user.apiUrl))
             await env.db.user.update(
                 where={"id": user.id}, data={"shipments": new_shipments}
             )
 
-            with open("old_shipments.json", "w") as f:
-                f.write(old_shipments)
+            if new_shipments == old_shipments:
+                continue
 
-            with open("new_shipments.json", "w") as f:
-                f.write(new_shipments)
-            if not new_shipments or not old_shipments or new_shipments == old_shipments:
+            if old_shipments == "[{}]":
+                for channel in user.subscribedChannels:
+                    await env.slack_client.chat_postMessage(
+                        channel=channel,
+                        text=":neodog_box: hai! i'm watching your shipments for you now :3",
+                    )
                 continue
 
             try:
-                old_shipments_dict = json.loads(old_shipments)
-                new_shipments_dict = json.loads(new_shipments)
-                differences = find_diff(old_shipments_dict, new_shipments_dict)
+                differences = find_diff(
+                    json.loads(old_shipments), json.loads(new_shipments)
+                )
             except json.JSONDecodeError as e:
                 logging.error(e)
                 continue
@@ -40,7 +44,16 @@ async def check_for_shipment_updates(delay: int = 10):
                 continue
 
             for channel in user.subscribedChannels:
+                if channel.startswith("U"):
+                    is_channel = False
+                else:
+                    logging.info(f"Channel info: {channel}")
+                    channel_info = await env.slack_client.conversations_info(
+                        channel=channel
+                    )
+                    is_channel = channel_info.get("channel", {}).get("is_channel")
                 for msg in differences:
+                    message = msg["pub_msg"] if is_channel else msg["msg"]
                     await env.slack_client.chat_postMessage(
                         channel=channel,
                         text="Your shipments have been updated!",
@@ -49,7 +62,7 @@ async def check_for_shipment_updates(delay: int = 10):
                                 "type": "section",
                                 "text": {
                                     "type": "mrkdwn",
-                                    "text": msg,
+                                    "text": message,
                                 },
                             }
                         ],

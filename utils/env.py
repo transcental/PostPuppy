@@ -13,6 +13,7 @@ class Environment:
     def __init__(self):
         self.slack_bot_token = os.environ.get("SLACK_BOT_TOKEN", "unset")
         self.slack_signing_secret = os.environ.get("SLACK_SIGNING_SECRET", "unset")
+        self.slack_app_id = os.environ.get("SLACK_APP_ID", "unset")
         self.database_url = os.environ.get("DATABASE_URL", "unset")
         self.environment = os.environ.get("ENVIRONMENT", "development")
 

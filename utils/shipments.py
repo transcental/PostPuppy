@@ -47,15 +47,18 @@ async def get_shipments(
         return None
 
 
-def find_diff(old: dict, new: dict):
+def find_diff(old: list[dict], new: list[dict]):
     diffs = []
     logging.info(f"Old: {type(old)}")
-    old_shipments = {shipment["id"]: shipment for shipment in old}
-    new_shipments = {shipment["id"]: shipment for shipment in new}
+    old = old or []
+    new = new or []
+    old_shipments = {shipment.get("id"): shipment for shipment in old}
+    new_shipments = {shipment.get("id"): shipment for shipment in new}
 
     all_ids = set(old_shipments.keys()).union(new_shipments.keys())
     for shipment_id in all_ids:
         msg = ""
+        pub_msg = ""
         old_shipment = old_shipments.get(shipment_id, {})
         new_shipment = new_shipments.get(shipment_id, {})
 
@@ -84,11 +87,13 @@ def find_diff(old: dict, new: dict):
                     and "shipped" in key
                     and new_shipment.get("shipped", False)
                 ):
+                    pub_msg = f':neodog_laptop_notice: *"{new_shipment.get("title", shipment_id)}"* has been shipped! And guess what! You can track it too! Visit my <slack://app?team=T0266FRGM&id={env.slack_app_id}|app home> to track it!'
                     msg = f':neodog_laptop_notice: Your *"{new_shipment.get("title", shipment_id)}"* has been shipped! You can track it <{new_shipment.get("tracking_link") or f"https://parcelsapp.com/en/tracking/{new_shipment.get("tracking_number")}"}|here>'
 
                 elif (
                     "tracking_number" in key and new_shipment.get("tracking_number")
                 ) or ("tracking_link" in key and new_shipment.get("tracking_link")):
+                    pub_msg = f':neodog_laptop_notice: Your *"{new_shipment.get("title", shipment_id)}"* can be tracked! Visit my <slack://app?team=T0266FRGM&id={env.slack_app_id}|app home> to track it!'
                     msg = f':neodog_laptop_notice: Your *"{new_shipment.get("title", shipment_id)}"* can be tracked <{new_shipment.get("tracking_link") or f"https://parcelsapp.com/en/tracking/{new_shipment.get("tracking_number")}"}|here>'
 
                 elif "type_text" in key and new_shipment.get("type_text"):
@@ -102,6 +107,6 @@ def find_diff(old: dict, new: dict):
                 else:
                     msg = f':neodog_notice: Your *"{new_shipment.get("title", shipment_id)}"* has been updated!'
         if msg:
-            diffs.append(msg)
+            diffs.append({"msg": msg, "pub_msg": pub_msg or msg})
 
     return diffs or None
