@@ -17,14 +17,14 @@ async def generate_home(user_id: str):
                     "type": "header",
                     "text": {
                         "type": "plain_text",
-                        "text": ":neodog_box: Shipment Stalker",
+                        "text": ":neodog_box: Post Puppy",
                     },
                 },
                 {
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": "Welcome to Shipment Stalker! Here, you can view all your shipments from Hack Club!\nTo get started, click the button below.",
+                        "text": "hai! i'm your friendly puppy who loves post nya~! i can help you keep track of your shipments from Hack Club :3\n\nyou haven't set up your viewer URL yet, please do so in the settings!",
                     },
                 },
                 {
@@ -32,7 +32,7 @@ async def generate_home(user_id: str):
                     "elements": [
                         {
                             "type": "button",
-                            "text": {"type": "plain_text", "text": "Get Started"},
+                            "text": {"type": "plain_text", "text": "get started"},
                             "action_id": "open_settings",
                             "style": "primary",
                         }
@@ -53,14 +53,14 @@ async def generate_home(user_id: str):
                     "type": "header",
                     "text": {
                         "type": "plain_text",
-                        "text": ":neodog_notice: Shipment Stalker",
+                        "text": ":neodog_notice: Post Puppy",
                     },
                 },
                 {
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": "Your shipment viewer URL is invalid. Please update it in the settings.",
+                        "text": "arf, arf!\noh no! it looks like i can't fetch your shipments right now :c\nplease check your settings and make sure your URL is correct!",
                     },
                 },
                 {"type": "divider"},
