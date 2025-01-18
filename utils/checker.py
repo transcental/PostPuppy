@@ -14,7 +14,6 @@ async def check_for_shipment_updates(delay: int = 10):
             if not user.subscribedChannels or not user.apiUrl:
                 continue
 
-            logging.info(f"Checking for user {user.id}")
             old_shipments = user.shipments if user.shipments else "[{}]"
             new_shipments = json.dumps(await get_shipments(user.id, user.apiUrl))
             await env.db.user.update(
