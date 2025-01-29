@@ -1,13 +1,14 @@
 import logging
-import re
 
 from slack_bolt.async_app import AsyncAck
 from slack_bolt.async_app import AsyncApp
 from slack_sdk.web.async_client import AsyncWebClient
 
-from utils.env import env
-from views.home import generate_home
-from views.settings import generate_settings
+from postpuppy.utils.emails import send_verification_link
+from postpuppy.utils.env import env
+from postpuppy.utils.langs import LANGUAGES
+from postpuppy.views.home import generate_home
+from postpuppy.views.settings import generate_settings
 
 app = AsyncApp(token=env.slack_bot_token, signing_secret=env.slack_signing_secret)
 
@@ -46,60 +47,29 @@ async def channels_callback(ack: AsyncAck, body, client: AsyncWebClient):
         channel for channel in current_channels if channel not in selected_channels
     ]
 
+    language = LANGUAGES.get(user.language, LANGUAGES["dog"])["utils.slack"]
+
     for channel in new_channels:
         try:
             await env.slack_client.chat_postMessage(
-                channel=channel,
-                text="Wrrf, wrrf, wrrf!!!! wrrf!\n_hai! i'm watching your shipments for you now :3_",
+                channel=channel, text=language["setup"]
             )
         except Exception as e:
             logging.error(f"Failed to send message to {channel} ({user_id}\n{e}")
+            blocks = language["setup_failed"]["blocks"]
+            blocks[0]["text"]["text"].format(channel)
             await env.slack_client.chat_postMessage(
                 channel=user_id,
-                text=f"haiii :3\nlooks like i can't send to channel <#{channel}>, please make sure i'm in the channel uwu",
-                blocks=[
-                    {
-                        "type": "section",
-                        "text": {
-                            "type": "mrkdwn",
-                            "text": f"haiii :3\nlooks like i can't send to <#{channel}>, please make sure you added me to the channel uwu :3",
-                        },
-                    },
-                    {
-                        "type": "context",
-                        "elements": [
-                            {
-                                "type": "mrkdwn",
-                                "text": "_wrrf, wrrrrrrf (sad barking noises)_",
-                            }
-                        ],
-                    },
-                ],
+                text=language["setup_failed"]["text"].format(channel),
+                blocks=blocks,
             )
 
     for channel in removed_channels:
         try:
             await env.slack_client.chat_postMessage(
                 channel=channel,
-                text=":neodog_sob: i'm not watching your shipments anymore :c\n_wrrf, wrrrrrrf (sad barking noises)_",
-                blocks=[
-                    {
-                        "type": "section",
-                        "text": {
-                            "type": "mrkdwn",
-                            "text": ":neodog_sob: _arf! arf!_ i'm not watching your shipments anymore :c",
-                        },
-                    },
-                    {
-                        "type": "context",
-                        "elements": [
-                            {
-                                "type": "mrkdwn",
-                                "text": "_wrrf, wrrrrrrf (sad barking noises)_",
-                            }
-                        ],
-                    },
-                ],
+                text=language["disabled"]["text"],
+                blocks=language["disabled"]["blocks"],
             )
         except Exception as e:
             logging.error(
@@ -113,25 +83,59 @@ async def channels_callback(ack: AsyncAck, body, client: AsyncWebClient):
 
 @app.view("settings_callback")
 async def settings_callback(ack: AsyncAck, body, client: AsyncWebClient):
-    logging.info("URL Callback")
     user_id = body["user"]["id"]
     view = body["view"]
     actions = view["state"]["values"]
-    url = actions["viewerUrl"]["url_input"]["value"]
-    pattern = r"^https:\/\/shipment-viewer\.hackclub\.com\/dyn\/shipments\/[^@]+@[^?]+\?signature=[a-zA-Z0-9]+$"
+    logging.info(actions)
+    email: str = actions["email"]["email"]["value"]
+    language = actions["language"]["language_select"]["selected_option"]["value"]
 
-    if not re.match(pattern, url):
-        logging.info("DID NOT MATCH")
+    user = await env.db.user.find_first(where={"id": user_id})
+
+    if not user:
         return await ack(
-            {"response_action": "errors", "errors": {"viewerUrl": "Invalid URL"}}
+            {"response_action": "errors", "errors": {"email": "User not found"}}
         )
 
-    await ack()
+    if user.language != language:
+        await env.db.user.update(where={"id": user_id}, data={"language": language})
+
+        await client.chat_postMessage(
+            channel=user_id, text=f"I'm now going to talk like a {language}"
+        )
+
+    if not email:
+        return await ack(
+            {"response_action": "errors", "errors": {"email": "Email cannot be empty"}}
+        )
+
+    if user.email == email and user.verifiedEmail:
+        await ack()
+        return await client.views_publish(
+            user_id=user_id, view=await generate_home(user_id)
+        )
+
+    language = LANGUAGES.get(user.language, LANGUAGES["dog"])["utils.slack"]
+
     await env.db.user.update(
         where={"id": user_id},
-        data={"viewerUrl": url, "apiUrl": url.replace("shipments", "jason")},
+        data={
+            "email": email,
+            "verifiedEmail": False,
+            "emailSignature": None,
+            "emailSignatureExpiry": None,
+            "viewerUrl": None,
+            "apiUrl": None,
+        },
+    )
+    await send_verification_link(user_id, email)
+    await client.chat_postMessage(
+        channel=user_id,
+        text=language["verification_sent"]["text"],
+        blocks=language["verification_sent"]["blocks"],
     )
 
+    await ack()
     return await client.views_publish(
         user_id=user_id, view=await generate_home(user_id)
     )
@@ -140,3 +144,13 @@ async def settings_callback(ack: AsyncAck, body, client: AsyncWebClient):
 @app.action("link")
 async def link_callback(ack: AsyncAck, body, client: AsyncWebClient):
     await ack()
+
+
+@app.action("mail")
+async def mail_callback(ack: AsyncAck, body, client: AsyncWebClient):
+    await ack()
+    user_id = body["user"]["id"]
+    user_info = await client.users_info(user=user_id)
+    email = user_info["user"]["profile"]["email"]
+
+    await send_verification_link(user_id, email)

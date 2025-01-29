@@ -1,6 +1,7 @@
 from typing import Optional
 
-from utils.env import env
+from postpuppy.utils.env import env
+from postpuppy.utils.langs import LANGUAGES
 
 
 async def get_shipments(
@@ -54,6 +55,8 @@ def find_diff(old: list[dict], new: list[dict]):
     new_shipments = {shipment.get("id"): shipment for shipment in new}
 
     all_ids = set(old_shipments.keys()).union(new_shipments.keys())
+
+    lang = LANGUAGES["dog"]["utils.shipments"]
     for shipment_id in all_ids:
         msg = ""
         pub_msg = ""
@@ -62,10 +65,20 @@ def find_diff(old: list[dict], new: list[dict]):
 
         if old_shipment and not new_shipment:
             # shipment was removed
-            msg = f':neodog_sob: arf arf~ order of *"{old_shipment.get("title", shipment_id)}"* has been cancelled :c i hope that\'s okay master! _wrrf, wrrf!_'
+            msg = lang["deleted_shipment"].format(
+                old_shipment.get("title", shipment_id)
+            )
         elif new_shipment and not old_shipment:
             # shipment was created
-            msg = f':neocat_box: arf arf~ your package, *"{new_shipment.get("title", shipment_id)}"*, is on its way, wrrf! i found these fancy terms, not sure what it means though, rrf! _({new_shipment.get("type_text", new_shipment.get("type", "unknown_status").replace("_", " ").title())}!)_'
+            msg = lang["new_shipment"].format(
+                new_shipment.get("title", shipment_id),
+                new_shipment.get(
+                    "type_text",
+                    new_shipment.get("type", "unknown_status")
+                    .replace("_", " ")
+                    .title(),
+                ),
+            )
         else:
             # shipment was updated
             updated_keys = []
@@ -85,9 +98,15 @@ def find_diff(old: list[dict], new: list[dict]):
             if new_shipment.get("shipped", False) and (
                 "tracking_number" in updated_keys or "tracking_link" in updated_keys
             ):
-                pub_msg = f':neodog_laptop_notice: "wrrf! your *"{new_shipment.get("title", shipment_id)}"*, is on its way, wag wag! and guess what, friend! you can track it too, tail wags! visit my <slack://app?team=T0266FRGM&id={env.slack_app_id}|bed> to see where it\'s at, woof woof!!1 🐾'
+                pub_msg = lang["new_shipment_with_tracking"]["pub_msg"].format(
+                    new_shipment.get("title", shipment_id)
+                )
 
-                msg = f':neodog_laptop_notice: wrrf! wrrf! your *"{new_shipment.get("title", shipment_id)}"* is on its way, wag wag! i think there\'s a tracking bone on my pillow\n<{new_shipment.get("tracking_link") or f"https://parcelsapp.com/en/tracking/{new_shipment.get("tracking_number")}"}|throw bone>'
+                msg = lang["new_shipment_with_tracking"]["msg"].format(
+                    new_shipment.get("title", shipment_id),
+                    new_shipment.get("tracking_link")
+                    or f"https://parcelsapp.com/en/tracking/{new_shipment.get("tracking_number")}",
+                )
 
             elif (
                 "tracking_number" in updated_keys
@@ -99,21 +118,30 @@ def find_diff(old: list[dict], new: list[dict]):
                     f':neodog_laptop_notice: wrrf, wrrf, wrrrrf!! your *"{new_shipment.get("title", shipment_id)}"* can be tracked, arf, arf! '
                     f'i found a tracking bone for you! it\'s in my  <slack://app?team=T0266FRGM&id={env.slack_app_id}|bed> :3'
                 )
-                msg = f':neodog_laptop_notice: _arf, arf!!_ i found a <{new_shipment.get("tracking_link") or f"https://parcelsapp.com/en/tracking/{new_shipment.get("tracking_number")}"}|tracking bone> for your *"{new_shipment.get("title", shipment_id)}"* on my pillow! \n_wrrf, wrrf_'
+                msg = lang["new_shipment_with_tracking"]["msg"].format(
+                    new_shipment.get("tracking_link")
+                    or f"https://parcelsapp.com/en/tracking/{new_shipment.get("tracking_number")}",
+                    new_shipment.get("title", shipment_id),
+                )
 
             elif "type_text" in updated_keys and new_shipment.get("type_text"):
-                msg = f':neodog_notice: hey hey hey hey hey!!!! friend, it looks like your *"{new_shipment.get("title", shipment_id)}"* is now {new_shipment.get("type_text", "up to something").lower()}! :3'
+                msg = lang["type_text_updated"].format(
+                    new_shipment.get("title", shipment_id),
+                    new_shipment.get("type_text", "up to something").lower(),
+                )
 
             elif "description" in updated_keys and old_shipment.get(
                 "description"
             ) != new_shipment.get("description"):
-                msg = (
-                    f':neodog_notice: woah, buddy! your *"{new_shipment.get("title", shipment_id)}"* has been updated to '
-                    f'{"\n".join(new_shipment.get("description", ""))}!!!!\nthat\'s amazing :D'
+                msg = lang["description_updated"].format(
+                    new_shipment.get("title", shipment_id),
+                    "\n".join(new_shipment.get("description", "")),
                 )
 
             else:
-                msg = f':neodog_notice: sowwy, idk what happened, but your *"{new_shipment.get("title", shipment_id)}"* has been updated!!! _(excited barking)_'
+                msg = lang["unkown_update"].format(
+                    new_shipment.get("title", shipment_id)
+                )
         if msg:
             diffs.append({"msg": msg, "pub_msg": pub_msg or msg})
 
