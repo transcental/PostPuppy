@@ -12,19 +12,14 @@ datasource db {
 model User {
   id                 String   @id @unique
   subscribedChannels String[]
+  language           String   @default("dog")
+
+  email                String?
+  verifiedEmail        Boolean   @default(false)
+  emailSignature       String?
+  emailSignatureExpiry DateTime?
 
   shipments String?
   viewerUrl String?
-  apiUrl String?
-}
-
-enum ShipmentType {
-  WarehouseShipment
-  HSHQMailShipment
-  HSRawPendingAGHShipment
-  HS3rdPartyPhysicalShipment
-  HSMinutemanShipment
-  BobaDropsShipment
-  SprigShipment
-  Other
+  apiUrl    String?
 }

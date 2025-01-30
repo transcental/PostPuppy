@@ -1,14 +1,52 @@
 import logging
 
-from utils.env import env
+from postpuppy.utils.env import env
+from postpuppy.utils.langs import LANGUAGES
+from postpuppy.utils.signing import get_viewer_signature
 
 
 async def generate_home(user_id: str):
     user_data = await env.db.user.find_first(where={"id": user_id})
     if not user_data:
-        user_data = await env.db.user.create({"id": user_id})
+        user_info = await env.slack_client.users_info(user=user_id)
+        email = user_info["user"]["profile"]["email"]
+        viewer_url = await get_viewer_signature(email)
+        api_url = viewer_url.replace("shipments", "jason")
+
+        user_data = await env.db.user.create(
+            {
+                "id": user_id,
+                "viewerUrl": viewer_url,
+                "apiUrl": api_url,
+                "email": email,
+                "verifiedEmail": True,
+            }
+        )
+        user_data = await env.db.user.find_first(where={"id": user_id})
+        if not user_data:
+            return {
+                "type": "home",
+                "blocks": [
+                    {
+                        "type": "header",
+                        "text": {
+                            "type": "plain_text",
+                            "text": ":neodog_notice: Post Puppy",
+                        },
+                    },
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": "oh no! i can't find your user data, please try again!",
+                        },
+                    },
+                ],
+            }
 
     url = user_data.viewerUrl
+    language = LANGUAGES.get(user_data.language, LANGUAGES["dog"])["views.home"]
+
     if not url or not user_data.apiUrl:
         return {
             "type": "home",
@@ -17,14 +55,14 @@ async def generate_home(user_id: str):
                     "type": "header",
                     "text": {
                         "type": "plain_text",
-                        "text": ":neodog_box: Post Puppy",
+                        "text": language["heading"],
                     },
                 },
                 {
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": "hai! i'm your friendly puppy who loves post nya~! i can help you keep track of your shipments from Hack Club :3\n\nyou haven't set up your viewer URL yet, please do so in the settings!",
+                        "text": language["description"],
                     },
                 },
                 {
@@ -53,14 +91,14 @@ async def generate_home(user_id: str):
                     "type": "header",
                     "text": {
                         "type": "plain_text",
-                        "text": ":neodog_notice: Post Puppy",
+                        "text": language["error_heading"],
                     },
                 },
                 {
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": "arf, arf!\noh no! it looks like i can't fetch your shipments right now :c\nplease check your settings and make sure your URL is correct!",
+                        "text": language["error_description"],
                     },
                 },
                 {"type": "divider"},
@@ -82,11 +120,13 @@ async def generate_home(user_id: str):
 
     shipments = []
     for shipment in data:
+        desc = shipment.get("description", [])
+        list_desc = [desc] if type(desc) is str else desc
         block = {
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": f"{':mailbox_with_mail:' if shipment.get('shipped', False) else ':mailbox:'} {shipment.get('icon')} *{shipment.get('title').replace('_', ' ').title()}* - _{shipment.get('type_text', '')}_\n{'\n'.join(shipment.get('description', ''))}",
+                "text": f"{':mailbox_with_mail:' if shipment.get('shipped', False) else ':mailbox:'} {shipment.get('icon')} *{shipment.get('title').replace('_', ' ').title()}* - _{shipment.get('type_text', '')}_\n{'\n'.join(list_desc)}",
             },
         }
         if shipment.get("tracking_number") or shipment.get("tracking_link"):

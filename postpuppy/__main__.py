@@ -7,16 +7,14 @@ import uvloop
 from dotenv import load_dotenv
 from starlette.applications import Starlette
 
-from utils.checker import check_for_shipment_updates
-from utils.env import env
-
-logging.basicConfig(
-    level=logging.INFO,
-)
+from postpuppy.utils.checker import check_for_shipment_updates
+from postpuppy.utils.env import env
 
 load_dotenv()
 
 asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+logging.basicConfig(level="INFO")
 
 
 @contextlib.asynccontextmanager
@@ -31,10 +29,14 @@ async def main(_app: Starlette):
         await env.async_close()
 
 
-if __name__ == "__main__":
+def start():
     uvicorn.run(
-        "utils.starlette:app",
+        "postpuppy.utils.starlette:app",
         host="0.0.0.0",
         port=env.port,
         log_level="info" if env.environment != "production" else "warning",
     )
+
+
+if __name__ == "__main__":
+    start()

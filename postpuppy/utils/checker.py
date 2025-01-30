@@ -2,9 +2,10 @@ import asyncio
 import json
 import logging
 
-from utils.env import env
-from utils.shipments import find_diff
-from utils.shipments import get_shipments
+from postpuppy.utils.env import env
+from postpuppy.utils.langs import LANGUAGES
+from postpuppy.utils.shipments import find_diff
+from postpuppy.utils.shipments import get_shipments
 
 
 async def check_for_shipment_updates(delay: int = 10):
@@ -42,7 +43,6 @@ async def check_for_shipment_updates(delay: int = 10):
                 if channel.startswith("U"):
                     is_channel = False
                 else:
-                    logging.info(f"Channel info: {channel}")
                     channel_info = await env.slack_client.conversations_info(
                         channel=channel
                     )
@@ -68,27 +68,21 @@ async def check_for_shipment_updates(delay: int = 10):
                         logging.error(
                             f"Failed to send update message to {channel} ({user.id}\n{e}"
                         )
+                        language = LANGUAGES.get(user.language, LANGUAGES["dog"])[
+                            "utils.checker"
+                        ]
+                        blocks = language.get(
+                            "cant_send", LANGUAGES["dog"]["cant_send"]
+                        ).get("text", LANGUAGES["dog"]["cant_send"]["text"])
+                        blocks[0]["text"]["text"].format(channel)
                         await env.slack_client.chat_postMessage(
                             channel=user.id,
-                            text=f"haiii :3\nlooks like i can't send to channel <#{channel}>, please make sure i'm in the channel uwu",
-                            blocks=[
-                                {
-                                    "type": "section",
-                                    "text": {
-                                        "type": "mrkdwn",
-                                        "text": f"haiii :3\nlooks like i can't send to <#{channel}>, please make sure you added me to the channel uwu :3",
-                                    },
-                                },
-                                {
-                                    "type": "context",
-                                    "elements": [
-                                        {
-                                            "type": "mrkdwn",
-                                            "text": "_wrrf, wrrrrrrf (sad barking noises)_",
-                                        }
-                                    ],
-                                },
-                            ],
+                            text=language.get(
+                                "cant_send", LANGUAGES["dog"]["cant_send"]
+                            )
+                            .get("text", LANGUAGES["dog"]["cant_send"]["text"])
+                            .format(channel),
+                            blocks=blocks,
                         )
 
         await asyncio.sleep(delay)
