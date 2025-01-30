@@ -9,7 +9,7 @@ from starlette.routing import Route
 from postpuppy.__main__ import main
 from postpuppy.utils.env import env
 from postpuppy.utils.langs import LANGUAGES
-from postpuppy.utils.signing import sign
+from postpuppy.utils.signing import get_viewer_signature
 from postpuppy.utils.slack import app as slack_app
 
 req_handler = AsyncSlackRequestHandler(slack_app)
@@ -45,9 +45,7 @@ async def verify(req: Request):
     if user.emailSignature != signature:
         return PlainTextResponse("Invalid signature", status_code=400)
 
-    viewer_signature = sign(email)
-
-    shipment_link = f"https://shipment-viewer.hackclub.com/dyn/shipments/{email}?signature={viewer_signature}"
+    shipment_link = await get_viewer_signature(email)
     api_link = shipment_link.replace("shipments", "jason")
 
     await env.db.user.update(

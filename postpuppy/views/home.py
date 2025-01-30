@@ -2,7 +2,7 @@ import logging
 
 from postpuppy.utils.env import env
 from postpuppy.utils.langs import LANGUAGES
-from postpuppy.utils.signing import sign
+from postpuppy.utils.signing import get_viewer_signature
 
 
 async def generate_home(user_id: str):
@@ -10,8 +10,7 @@ async def generate_home(user_id: str):
     if not user_data:
         user_info = await env.slack_client.users_info(user=user_id)
         email = user_info["user"]["profile"]["email"]
-        signature = sign(email)
-        viewer_url = f"https://shipment-viewer.hackclub.com/dyn/shipments/{email}?signature={signature}"
+        viewer_url = await get_viewer_signature(email)
         api_url = viewer_url.replace("shipments", "jason")
 
         user_data = await env.db.user.create(
@@ -158,16 +157,6 @@ async def generate_home(user_id: str):
                     "text": {"type": "plain_text", "text": "Open Settings"},
                     "action_id": "open_settings",
                 },
-            },
-            {
-                "type": "actions",
-                "elements": [
-                    {
-                        "type": "button",
-                        "text": {"type": "plain_text", "text": "Send mail"},
-                        "action_id": "mail",
-                    }
-                ],
             },
             {"type": "section", "text": {"type": "mrkdwn", "text": "*Shipments:*"}},
             {"type": "divider"},

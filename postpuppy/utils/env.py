@@ -18,7 +18,7 @@ class Environment:
 
         self.database_url = os.environ.get("DATABASE_URL", "unset")
         self.environment = os.environ.get("ENVIRONMENT", "development")
-        self.signing_secret = os.environ.get("SIGNING_SECRET", "unset")
+        self.shipment_viewer_token = os.environ.get("SHIPMENT_VIEWER_TOKEN", "unset")
 
         self.port = int(os.environ.get("PORT", 3000))
 

@@ -1,14 +1,10 @@
-import hashlib
-import hmac
-
 from postpuppy.utils.env import env
 
 
-def sign(text: str):
-    signing_secret = env.signing_secret
-    h = hmac.new(signing_secret.encode(), text.encode(), hashlib.sha256)
-    return h.hexdigest()
-
-
-def check_signature(email: str, sig: str):
-    return sig == sign(email)
+async def get_viewer_signature(email: str):
+    async with env.aiohttp_session.post(
+        "https://shipment-viewer.hackclub.com/api/presign",
+        data=email,
+        headers={"Authorization": env.shipment_viewer_token},
+    ) as resp:
+        return await resp.text()

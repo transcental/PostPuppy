@@ -10,7 +10,7 @@ async def get_shipments(
     try:
         async with env.aiohttp_session.get(api_url) as response:
             data = await response.json()
-            return data
+            return data or [{}]
     except Exception as e:
         if handle_error:
             await env.slack_client.chat_postMessage(
@@ -51,8 +51,8 @@ def find_diff(old: list[dict], new: list[dict]):
     diffs = []
     old = old or []
     new = new or []
-    old_shipments = {shipment.get("id"): shipment for shipment in old}
-    new_shipments = {shipment.get("id"): shipment for shipment in new}
+    old_shipments = {shipment.get("title"): shipment for shipment in old}
+    new_shipments = {shipment.get("title"): shipment for shipment in new}
 
     all_ids = set(old_shipments.keys()).union(new_shipments.keys())
 
@@ -78,6 +78,7 @@ def find_diff(old: list[dict], new: list[dict]):
                     .replace("_", " ")
                     .title(),
                 ),
+                new_shipment.get("description", "- unknown contents"),
             )
         else:
             # shipment was updated
@@ -99,13 +100,15 @@ def find_diff(old: list[dict], new: list[dict]):
                 "tracking_number" in updated_keys or "tracking_link" in updated_keys
             ):
                 pub_msg = lang["new_shipment_with_tracking"]["pub_msg"].format(
-                    new_shipment.get("title", shipment_id)
+                    new_shipment.get("title", shipment_id),
+                    new_shipment.get("description", "- unknown contents"),
                 )
 
                 msg = lang["new_shipment_with_tracking"]["msg"].format(
                     new_shipment.get("title", shipment_id),
                     new_shipment.get("tracking_link")
                     or f"https://parcelsapp.com/en/tracking/{new_shipment.get("tracking_number")}",
+                    new_shipment.get("description", "- unknown contents"),
                 )
 
             elif (
