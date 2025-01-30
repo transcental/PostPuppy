@@ -57,7 +57,7 @@ async def channels_callback(ack: AsyncAck, body, client: AsyncWebClient):
         except Exception as e:
             logging.error(f"Failed to send message to {channel} ({user_id}\n{e}")
             blocks = language["setup_failed"]["blocks"]
-            blocks[0]["text"]["text"].format(channel)
+            blocks[0]["text"]["text"] = blocks[0]["text"]["text"].format(channel)
             await env.slack_client.chat_postMessage(
                 channel=user_id,
                 text=language["setup_failed"]["text"].format(channel),
