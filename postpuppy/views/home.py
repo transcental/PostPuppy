@@ -121,7 +121,7 @@ async def generate_home(user_id: str):
     shipments = []
     for shipment in data:
         desc = shipment.get("description", [])
-        list_desc = list(desc) if type(desc) is str else desc
+        list_desc = [desc] if type(desc) is str else desc
         block = {
             "type": "section",
             "text": {
