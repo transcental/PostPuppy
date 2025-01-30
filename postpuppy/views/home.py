@@ -120,11 +120,13 @@ async def generate_home(user_id: str):
 
     shipments = []
     for shipment in data:
+        desc = shipment.get("description", [])
+        list_desc = list(desc) if type(desc) is str else desc
         block = {
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": f"{':mailbox_with_mail:' if shipment.get('shipped', False) else ':mailbox:'} {shipment.get('icon')} *{shipment.get('title').replace('_', ' ').title()}* - _{shipment.get('type_text', '')}_\n{'\n'.join(shipment.get('description', ''))}",
+                "text": f"{':mailbox_with_mail:' if shipment.get('shipped', False) else ':mailbox:'} {shipment.get('icon')} *{shipment.get('title').replace('_', ' ').title()}* - _{shipment.get('type_text', '')}_\n{'\n'.join(list_desc)}",
             },
         }
         if shipment.get("tracking_number") or shipment.get("tracking_link"):
