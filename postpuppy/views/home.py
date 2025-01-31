@@ -146,13 +146,13 @@ async def generate_home(user_id: str):
         "blocks": [
             {
                 "type": "header",
-                "text": {"type": "plain_text", "text": ":neodog_box: Shipment Stalker"},
+                "text": {"type": "plain_text", "text": ":neodog_box: Post Puppy"},
             },
             {
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": f"Welcome to Shipment Stalker! Here, you can view all your shipments from Hack Club.\n\nYou have *{total_fulfilled}* fulfilled shipments and *{len(data) - total_fulfilled}* pending shipments!",
+                    "text": f"Welcome to Post Puppy! Here, you can view all your shipments from Hack Club.\n\nYou have *{total_fulfilled}* fulfilled shipments and *{len(data) - total_fulfilled}* pending shipments!",
                 },
                 "accessory": {
                     "type": "button",
