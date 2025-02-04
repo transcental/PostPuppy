@@ -140,7 +140,7 @@ def find_diff(old: list[dict], new: list[dict]):
                 )
 
             else:
-                msg = lang["unkown_update"].format(
+                msg = lang["unknown_update"].format(
                     new_shipment.get("title", shipment_id)
                 )
         if msg:
