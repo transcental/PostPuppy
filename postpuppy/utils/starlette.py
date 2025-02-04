@@ -27,7 +27,9 @@ async def health(req: Request):
         async with env.aiohttp_session.get(
             "https://shipment-viewer.hackclub.com"
         ) as resp:
-            if not resp.status == 200:
+            if resp.status == 200:
+                res["shipment_viewer_online"] = True
+            else:
                 res["shipment_viewer_online"] = False
     except Exception:
         res["shipment_viewer_online"] = False
