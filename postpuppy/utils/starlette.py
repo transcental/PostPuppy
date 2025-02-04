@@ -1,8 +1,10 @@
 from datetime import datetime
 
 from slack_bolt.adapter.starlette.async_handler import AsyncSlackRequestHandler
+from slack_sdk.errors import SlackApiError
 from starlette.applications import Starlette
 from starlette.requests import Request
+from starlette.responses import JSONResponse
 from starlette.responses import PlainTextResponse
 from starlette.routing import Route
 
@@ -17,6 +19,43 @@ req_handler = AsyncSlackRequestHandler(slack_app)
 
 async def endpoint(req: Request):
     return await req_handler.handle(req)
+
+
+async def health(req: Request):
+    res = {}
+    try:
+        async with env.aiohttp_session.get(
+            "https://shipment-viewer.hackclub.com"
+        ) as resp:
+            if not resp.status == 200:
+                res["shipment_viewer_online"] = False
+    except Exception:
+        res["shipment_viewer_online"] = False
+
+    try:
+        users = await env.db.user.count()
+        if users:
+            res["database_online"] = True
+            res["total_users"] = users
+    except Exception:
+        res["database_online"] = False
+
+    try:
+        await env.slack_client.auth_test()
+        res["slack_online"] = True
+    except SlackApiError:
+        res["slack_online"] = False
+
+    if (
+        res.get("shipment_viewer_online")
+        and res.get("database_online")
+        and res.get("slack_online")
+    ):
+        res["healthy"] = True
+    else:
+        res["healthy"] = False
+
+    return JSONResponse(res)
 
 
 async def verify(req: Request):
@@ -69,6 +108,7 @@ app = Starlette(
     routes=[
         Route(path="/slack/events", endpoint=endpoint, methods=["POST"]),
         Route(path="/verify", endpoint=verify, methods=["GET"]),
+        Route(path="/health", endpoint=health, methods=["GET"]),
     ],
     lifespan=main,
 )
