@@ -1,12 +1,10 @@
-from typing import Optional
-
 from postpuppy.utils.env import env
 from postpuppy.utils.langs import LANGUAGES
 
 
 async def get_shipments(
     user_id: str, api_url: str, handle_error: bool = True
-) -> Optional[list[dict]]:
+) -> list[dict]:
     try:
         async with env.aiohttp_session.get(api_url) as response:
             data = await response.json()
@@ -44,7 +42,7 @@ async def get_shipments(
                     },
                 ],
             )
-        return None
+        return [{}]
 
 
 def find_diff(old: list[dict], new: list[dict]):
