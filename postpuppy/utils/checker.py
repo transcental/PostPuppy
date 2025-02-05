@@ -24,6 +24,10 @@ async def check_for_shipment_updates(delay: int = 30):
                 await send_heartbeat(f"{user.id}: No changes in shipments")
                 continue
 
+            if new_shipments == "[{}]":
+                await send_heartbeat(f"{user.id}: New shipments is empty. Viewer is likely down.")
+                continue
+
             await env.db.user.update(
                 where={"id": user.id}, data={"shipments": new_shipments}
             )
