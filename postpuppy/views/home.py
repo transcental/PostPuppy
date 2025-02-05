@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 
 from postpuppy.utils.env import env
 from postpuppy.utils.langs import LANGUAGES
@@ -139,6 +140,21 @@ async def generate_home(user_id: str):
             }
 
         shipments.append(block)
+
+        try:
+            date = datetime.strptime(shipment.get("date", ""), "%Y-%m-%dT%H:%M:%S.%fZ")
+        except ValueError:
+            date = datetime.strptime(shipment.get("date", ""), "%Y-%m-%d")
+
+        fallback_time = date.strftime("%A, %B %d")
+        datestring = f"<!date^{int(date.timestamp())}^Added {{date_long_pretty}}|{fallback_time}>"
+
+        shipments.append(
+            {
+                "type": "context",
+                "elements": [{"type": "mrkdwn", "text": f":calendar: {datestring}"}],
+            }
+        )
         shipments.append({"type": "divider"})
 
     return {
