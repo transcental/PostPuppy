@@ -17,12 +17,13 @@ async def check_for_shipment_updates(delay: int = 10):
 
             old_shipments = user.shipments if user.shipments else "[{}]"
             new_shipments = json.dumps(await get_shipments(user.id, user.apiUrl))
-            await env.db.user.update(
-                where={"id": user.id}, data={"shipments": new_shipments}
-            )
 
             if new_shipments == old_shipments:
                 continue
+
+            await env.db.user.update(
+                where={"id": user.id}, data={"shipments": new_shipments}
+            )
 
             if old_shipments == "[{}]":
                 # First run, skip
