@@ -275,5 +275,5 @@ LANGUAGES = {
             "error_heading": ":neocat_notice: Correspondance Kitty",
             "error_description": "meow, meow!\noh no! it looks like i can't fetch your shipments right now :c\nplease check your settings and make sure your URL is correct!",
         },
-    }
+    },
 }
