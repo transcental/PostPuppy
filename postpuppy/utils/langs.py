@@ -3,6 +3,8 @@ from postpuppy.utils.env import env
 
 LANGUAGES = {
     "dog": {
+        "display_name": "Post Puppy",
+        "icon_emoji": ":neodog_box:",
         "utils.checker": {
             "cant_send": {
                 "text": "haiii :3\nlooks like i can't send to channel <#{}>, please make sure i'm in the channel uwu",
