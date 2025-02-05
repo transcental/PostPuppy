@@ -32,7 +32,7 @@ LANGUAGES = {
             "deleted_shipment": ':neodog_sob: arf arf~ order of *"{}"* has been cancelled :c i hope that\'s okay master! _wrrf, wrrf!_',
             "new_shipment": ':neodog_box: arf arf~ your package, *"{}"*, is on its way, wrrf! i found these fancy terms, not sure what it means though, rrf! _({}!)_\noh, and this is what\'s inside!\n{}',
             "new_shipment_with_tracking": {
-                "pub_msg": f':neodog_laptop_notice: "wrrf! your *"{{}}"*, is on its way, wag wag! a`nd guess what, fren! you can track it too, tail wags! visit my <slack://app?team=T0266FRGM&id={env.slack_app_id}|bed> to see where it\'s at, woof woof!! 🐾\npsst, it has this stuff inside!\n{{}}',
+                "pub_msg": f':neodog_laptop_notice: "wrrf! your *"{{}}"*, is on its way, wag wag! and guess what, fren! you can track it too, tail wags! visit my <slack://app?team=T0266FRGM&id={env.slack_app_id}|bed> to see where it\'s at, woof woof!! 🐾\npsst, it has this stuff inside!\n{{}}',
                 "msg": ':neodog_laptop_notice: wrrf! wrrf! your *"{}"* is on its way, wag wag! i think there\'s a tracking bone on my pillow\n<{}|throw bone>\na little birdy told me it has these things inside\n{}',
             },
             "updated_shipment_with_tracking": {
@@ -169,8 +169,8 @@ LANGUAGES = {
             "deleted_shipment": ':neocat_sob: meow meow~ order of *"{}"* has been cancelled :c i hope that\'s okay master! _meow, meow!_',
             "new_shipment": ':neocat_box: meow meow~ your package, *"{}"*, is on its way, meow! i found these fancy terms, not sure what it means though, mrow! _({}!)_\noh, and this is what\'s inside!\n{}',
             "new_shipment_with_tracking": {
-                "pub_msg": f':neocat_laptop_notice: "mrow! your *"{{}}"*, is on its way, purr purr! a`nd guess what, fren! you can track it too, tail flick! visit my <slack://app?team=T0266FRGM&id={env.slack_app_id}|bed> to see where it\'s at, meow meow!! 🐾\npsst, it has this stuff inside!\n{{}}',
-                "msg": ':neocat_laptop_notice: wrrf! wrrf! your *"{}"* is on its way, meow meow! i think there\'s a tracking fish on my pillow\n<{}|throw fish>\na little birdy told me it has these things inside\n{}',
+                "pub_msg": f':neocat_laptop_notice: "mrow! your *"{{}}"*, is on its way, purr purr! and guess what, fren! you can track it too, tail flick! visit my <slack://app?team=T0266FRGM&id={env.slack_app_id}|bed> to see where it\'s at, meow meow!! 🐾\npsst, it has this stuff inside!\n{{}}',
+                "msg": ':neocat_laptop_notice: mrow! mrow! your *"{}"* is on its way, meow meow! i think there\'s a tracking fish on my pillow\n<{}|throw fish>\na little birdy told me it has these things inside\n{}',
             },
             "updated_shipment_with_tracking": {
                 "pub_msg": f':neocat_laptop_notice: meow, meow, meoooow!! your *"{{}}"* can be tracked, meow meow!\ni found a tracking bone for you! it\'s in my  <slack://app?team=T0266FRGM&id={env.slack_app_id}|bed> :3',
@@ -270,7 +270,7 @@ LANGUAGES = {
             }
         },
         "views.home": {
-            "heading": ":neocat_box: Correspondance Kitty",
+            "heading": ":neocat_box: Correspondence Kitty",
             "description": "hai! i'm your friendly kitty who loves post nya~! i can help you keep track of your shipments from Hack Club :3\n\nyou haven't set up your viewer URL yet, please do so in the settings!",
             "error_heading": ":neocat_notice: Correspondance Kitty",
             "error_description": "meow, meow!\noh no! it looks like i can't fetch your shipments right now :c\nplease check your settings and make sure your URL is correct!",
