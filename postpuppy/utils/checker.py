@@ -4,6 +4,7 @@ import logging
 
 from postpuppy.utils.env import env
 from postpuppy.utils.langs import LANGUAGES
+from postpuppy.utils.logging import send_heartbeat
 from postpuppy.utils.shipments import find_diff
 from postpuppy.utils.shipments import get_shipments
 
@@ -11,6 +12,7 @@ from postpuppy.utils.shipments import get_shipments
 async def check_for_shipment_updates(delay: int = 10):
     while True:
         users = await env.db.user.find_many()
+        await send_heartbeat("Starting shipment check")
         for user in users:
             if not user.subscribedChannels or not user.apiUrl:
                 continue
@@ -19,6 +21,7 @@ async def check_for_shipment_updates(delay: int = 10):
             new_shipments = json.dumps(await get_shipments(user.id, user.apiUrl))
 
             if new_shipments == old_shipments:
+                await send_heartbeat(f"{user.id}: No changes in shipments")
                 continue
 
             await env.db.user.update(
@@ -26,7 +29,7 @@ async def check_for_shipment_updates(delay: int = 10):
             )
 
             if old_shipments == "[{}]":
-                # First run, skip
+                await send_heartbeat(f"{user.id}: Old shipments is default. Skipping.")
                 continue
 
             try:
@@ -35,11 +38,17 @@ async def check_for_shipment_updates(delay: int = 10):
                 )
             except json.JSONDecodeError as e:
                 logging.error(e)
+                await send_heartbeat(f"{user.id}: Failed to decode JSON {e}")
                 continue
 
             if not differences:
+                await send_heartbeat(f"{user.id}: No differences found")
                 continue
 
+            await send_heartbeat(
+                f"{user.id}: Found differences.",
+                messages=[msg["msg"] for msg in differences],
+            )
             for channel in user.subscribedChannels:
                 if channel.startswith("U"):
                     is_channel = False
@@ -66,6 +75,10 @@ async def check_for_shipment_updates(delay: int = 10):
                             ],
                         )
                     except Exception as e:
+                        await send_heartbeat(
+                            f"{user.id}: Failed to send update message to {channel}",
+                            [f"```{e}```"],
+                        )
                         logging.error(
                             f"Failed to send update message to {channel} ({user.id}\n{e}"
                         )
@@ -86,4 +99,5 @@ async def check_for_shipment_updates(delay: int = 10):
                             blocks=blocks,
                         )
 
+        await send_heartbeat("Finished shipment check")
         await asyncio.sleep(delay)
