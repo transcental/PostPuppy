@@ -9,7 +9,7 @@ from postpuppy.utils.shipments import find_diff
 from postpuppy.utils.shipments import get_shipments
 
 
-async def check_for_shipment_updates(delay: int = 10):
+async def check_for_shipment_updates(delay: int = 30):
     while True:
         users = await env.db.user.find_many()
         await send_heartbeat("Starting shipment check")
