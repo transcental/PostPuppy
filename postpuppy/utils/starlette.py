@@ -98,6 +98,8 @@ async def verify(req: Request):
 
     await env.slack_client.chat_postMessage(
         channel=user_id,
+        icon_emoji=language["icon_emoji"],
+        username=language["display_name"],
         text=language["verified_slack"]["text"],
         blocks=language["verified_slack"]["blocks"],
     )

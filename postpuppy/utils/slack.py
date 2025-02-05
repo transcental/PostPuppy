@@ -52,7 +52,10 @@ async def channels_callback(ack: AsyncAck, body, client: AsyncWebClient):
     for channel in new_channels:
         try:
             await env.slack_client.chat_postMessage(
-                channel=channel, text=language["setup"]
+                channel=channel,
+                icon_emoji=language["icon_emoji"],
+                username=language["display_name"],
+                text=language["setup"],
             )
         except Exception as e:
             logging.error(f"Failed to send message to {channel} ({user_id}\n{e}")
@@ -60,6 +63,8 @@ async def channels_callback(ack: AsyncAck, body, client: AsyncWebClient):
             blocks[0]["text"]["text"] = blocks[0]["text"]["text"].format(channel)
             await env.slack_client.chat_postMessage(
                 channel=user_id,
+                icon_emoji=language["icon_emoji"],
+                username=language["display_name"],
                 text=language["setup_failed"]["text"].format(channel),
                 blocks=blocks,
             )
@@ -68,6 +73,8 @@ async def channels_callback(ack: AsyncAck, body, client: AsyncWebClient):
         try:
             await env.slack_client.chat_postMessage(
                 channel=channel,
+                icon_emoji=language["icon_emoji"],
+                username=language["display_name"],
                 text=language["disabled"]["text"],
                 blocks=language["disabled"]["blocks"],
             )
@@ -101,7 +108,10 @@ async def settings_callback(ack: AsyncAck, body, client: AsyncWebClient):
         await env.db.user.update(where={"id": user_id}, data={"language": language})
 
         await client.chat_postMessage(
-            channel=user_id, text=f"I'm now going to talk like a {language}"
+            icon_emoji=language["icon_emoji"],
+            username=language["display_name"],
+            channel=user_id,
+            text=f"I'm now going to talk like a {language}",
         )
 
     if not email:
@@ -131,6 +141,8 @@ async def settings_callback(ack: AsyncAck, body, client: AsyncWebClient):
     await send_verification_link(user_id, email)
     await client.chat_postMessage(
         channel=user_id,
+        icon_emoji=language["icon_emoji"],
+        username=language["display_name"],
         text=language["verification_sent"]["text"],
         blocks=language["verification_sent"]["blocks"],
     )

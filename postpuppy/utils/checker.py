@@ -25,7 +25,9 @@ async def check_for_shipment_updates(delay: int = 30):
                 continue
 
             if new_shipments == "[{}]":
-                await send_heartbeat(f"{user.id}: New shipments is empty. Viewer is likely down.")
+                await send_heartbeat(
+                    f"{user.id}: New shipments is empty. Viewer is likely down."
+                )
                 continue
 
             await env.db.user.update(
@@ -63,9 +65,14 @@ async def check_for_shipment_updates(delay: int = 30):
                     is_channel = channel_info.get("channel", {}).get("is_channel")
                 for msg in differences:
                     message = msg["pub_msg"] if is_channel else msg["msg"]
+                    lang = LANGUAGES.get(user.language, LANGUAGES["dog"])
                     try:
                         await env.slack_client.chat_postMessage(
                             channel=channel,
+                            icon_emoji=lang.get("icon", LANGUAGES["dog"]["icon"]),
+                            username=lang.get(
+                                "display_name", LANGUAGES["dog"]["display_name"]
+                            ),
                             text="Your shipments have been updated!",
                             unfurl_links=False,
                             blocks=[
@@ -95,6 +102,12 @@ async def check_for_shipment_updates(delay: int = 30):
                         blocks[0]["text"]["text"].format(channel)
                         await env.slack_client.chat_postMessage(
                             channel=user.id,
+                            icon_emoji=lang.get(
+                                "icon_emoji", LANGUAGES["dog"]["icon_emoji"]
+                            ),
+                            username=lang.get(
+                                "display_name", LANGUAGES["dog"]["display_name"]
+                            ),
                             text=language.get(
                                 "cant_send", LANGUAGES["dog"]["cant_send"]
                             )
