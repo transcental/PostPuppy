@@ -6,9 +6,14 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 from postpuppy.utils.env import env
+from postpuppy.utils.logging import send_heartbeat
 
 
-def send_email(recipient: str, subject: str, msg: MIMEText):
+async def send_email(recipient: str, subject: str, msg: MIMEText):
+    await send_heartbeat(
+        f"{recipient}: Sending email",
+        [f"Subject: {subject}", f"Message: {msg.as_string()}"],
+    )
     env.smtp_login()
     mail = MIMEMultipart()
     mail["From"] = f"Post Puppy <{env.smtp_sender}>"
@@ -17,11 +22,13 @@ def send_email(recipient: str, subject: str, msg: MIMEText):
 
     mail.attach(msg)
     env.smtp_client.send_message(mail)
+    await send_heartbeat(f"{recipient}: Email sent")
 
     return True
 
 
 async def send_verification_link(user_id: str, email: str):
+    await send_heartbeat(f"{user_id}: Generating verification email for {email}")
     signature = binascii.hexlify(os.urandom(32))
     nice_sig = signature.decode("utf-8")
     link = f"{env.domain}/verify?user_id={user_id}&email={email}&signature={nice_sig}"
@@ -45,4 +52,4 @@ async def send_verification_link(user_id: str, email: str):
         },
     )
     msg = MIMEText(html_msg, "html")
-    send_email(email, "Verify your email", msg)
+    await send_email(email, "Verify your email", msg)
