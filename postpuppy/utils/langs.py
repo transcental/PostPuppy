@@ -32,7 +32,7 @@ LANGUAGES = {
             "deleted_shipment": ':neodog_sob: arf arf~ order of *"{}"* has been cancelled :c i hope that\'s okay master! _wrrf, wrrf!_',
             "new_shipment": ':neodog_box: arf arf~ your package, *"{}"*, is on its way, wrrf! i found these fancy terms, not sure what it means though, rrf! _({}!)_\noh, and this is what\'s inside!\n{}',
             "new_shipment_with_tracking": {
-                "pub_msg": f':neodog_laptop_notice: "wrrf! your *"{{}}"*, is on its way, wag wag! a`nd guess what, fren! you can track it too, tail wags! visit my <slack://app?team=T0266FRGM&id={env.slack_app_id}|bed> to see where it\'s at, woof woof!! 🐾\npsst, it has this stuff inside!\n{{}}',
+                "pub_msg": f':neodog_laptop_notice: "wrrf! your *"{{}}"*, is on its way, wag wag! and guess what, fren! you can track it too, tail wags! visit my <slack://app?team=T0266FRGM&id={env.slack_app_id}|bed> to see where it\'s at, woof woof!! 🐾\npsst, it has this stuff inside!\n{{}}',
                 "msg": ':neodog_laptop_notice: wrrf! wrrf! your *"{}"* is on its way, wag wag! i think there\'s a tracking bone on my pillow\n<{}|throw bone>\na little birdy told me it has these things inside\n{}',
             },
             "updated_shipment_with_tracking": {
