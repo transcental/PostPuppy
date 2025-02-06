@@ -127,7 +127,7 @@ async def generate_home(user_id: str):
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": f"{':mailbox_with_mail:' if shipment.get('shipped', False) else ':mailbox:'} {shipment.get('icon')} *{shipment.get('title').replace('_', ' ').title()}* - _{shipment.get('type_text', '')}_\n{'\n'.join(list_desc)}",
+                "text": f"{':mailbox_with_mail:' if shipment.get('shipped', False) else ':clock1:'} {shipment.get('icon')} *{shipment.get('title').replace('_', ' ').title()}* - _{shipment.get('type_text', '')}_\n{'\n'.join(list_desc)}",
             },
         }
         if shipment.get("tracking_number") or shipment.get("tracking_link"):
