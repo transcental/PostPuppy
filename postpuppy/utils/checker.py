@@ -70,7 +70,7 @@ async def check_for_shipment_updates(delay: int = 30):
                         await env.slack_client.chat_postMessage(
                             channel=channel,
                             icon_emoji=lang.get(
-                                "emoji_icon", LANGUAGES["dog"]["emoji_icon"]
+                                "icon_emoji", LANGUAGES["dog"]["icon_emoji"]
                             ),
                             username=lang.get(
                                 "display_name", LANGUAGES["dog"]["display_name"]
