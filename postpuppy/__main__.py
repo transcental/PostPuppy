@@ -20,7 +20,6 @@ logging.basicConfig(level="INFO")
 
 @contextlib.asynccontextmanager
 async def main(_app: Starlette):
-    await env.async_init()
     await env.db.connect()
     asyncio.create_task(check_for_shipment_updates())
     await send_heartbeat(":neodog_verified: Post Puppy is online!")
