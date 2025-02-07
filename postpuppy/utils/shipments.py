@@ -56,7 +56,7 @@ def find_diff(old: list[dict], new: list[dict], lang: dict[str, list[dict] | str
     new_shipments = {shipment.get("title"): shipment for shipment in new}
 
     all_ids = set(old_shipments.keys()).union(new_shipments.keys())
-    lang = lang.get("utils.checker", LANGUAGES.get("dog")["utils.checker"])
+    lang = lang.get("utils.shipments", LANGUAGES.get("dog")["utils.shipments"])
 
     for shipment_id in all_ids:
         msg = ""
