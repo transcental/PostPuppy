@@ -1,6 +1,8 @@
 import logging
 from datetime import datetime
 
+import aiohttp
+
 from postpuppy.utils.env import env
 from postpuppy.utils.langs import LANGUAGES
 from postpuppy.utils.signing import get_viewer_signature
@@ -81,7 +83,7 @@ async def generate_home(user_id: str):
         }
 
     try:
-        async with env.aiohttp_session.get(user_data.apiUrl) as response:
+        async with aiohttp.ClientSession().get(user_data.apiUrl) as response:
             data = await response.json()
     except Exception as e:
         logging.error(e)

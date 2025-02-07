@@ -1,3 +1,5 @@
+import aiohttp
+
 from postpuppy.utils.env import env
 
 
@@ -5,7 +7,7 @@ async def get_shipments(
     user_id: str, api_url: str, handle_error: bool = True
 ) -> list[dict]:
     try:
-        async with env.aiohttp_session.get(api_url) as response:
+        async with aiohttp.ClientSession().get(api_url) as response:
             data = await response.json()
             return data or [{}]
     except Exception as e:

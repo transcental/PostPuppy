@@ -1,7 +1,6 @@
 import os
 from smtplib import SMTP
 
-import aiohttp
 from dotenv import load_dotenv
 from slack_sdk.web.async_client import AsyncWebClient
 
@@ -39,19 +38,9 @@ class Environment:
 
         self.db = Prisma()
 
-        self.aiohttp_session: aiohttp.ClientSession = None  # type: ignore - initialised in async_init which happens at program start
         self.slack_client = AsyncWebClient(token=self.slack_bot_token)
         self.smtp_client = SMTP(self.smtp_server, self.smtp_port)
         self.smtp_logged_in = False
-
-    async def async_init(self):
-        """Initialises the aiohttp session"""
-        self.aiohttp_session = aiohttp.ClientSession()
-
-    async def async_close(self):
-        """Closes the aiohttp session"""
-        if self.aiohttp_session:
-            await self.aiohttp_session.close()
 
     def smtp_login(self):
         if not self.smtp_logged_in:
