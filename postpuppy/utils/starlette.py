@@ -94,14 +94,15 @@ async def verify(req: Request):
         data={"verifiedEmail": True, "viewerUrl": shipment_link, "apiUrl": api_link},
     )
 
-    language = LANGUAGES.get(user.language, LANGUAGES["dog"])["utils.starlette"]
+    language = LANGUAGES.get(user.language, LANGUAGES["dog"])
+    lang = language["utils.starlette"]
 
     await env.slack_client.chat_postMessage(
         channel=user_id,
         icon_emoji=language["icon_emoji"],
         username=language["display_name"],
-        text=language["verified_slack"]["text"],
-        blocks=language["verified_slack"]["blocks"],
+        text=lang["verified_slack"]["text"],
+        blocks=lang["verified_slack"]["blocks"],
     )
 
     return PlainTextResponse("Email verified", status_code=200)

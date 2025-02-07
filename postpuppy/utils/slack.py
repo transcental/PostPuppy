@@ -47,7 +47,8 @@ async def channels_callback(ack: AsyncAck, body, client: AsyncWebClient):
         channel for channel in current_channels if channel not in selected_channels
     ]
 
-    language = LANGUAGES.get(user.language, LANGUAGES["dog"])["utils.slack"]
+    language = LANGUAGES.get(user.language, LANGUAGES["dog"])
+    lang = language["utils.slack"]
 
     for channel in new_channels:
         try:
@@ -55,7 +56,7 @@ async def channels_callback(ack: AsyncAck, body, client: AsyncWebClient):
                 channel=channel,
                 icon_emoji=language["icon_emoji"],
                 username=language["display_name"],
-                text=language["setup"],
+                text=lang["setup"],
             )
         except Exception as e:
             logging.error(f"Failed to send message to {channel} ({user_id}\n{e}")
@@ -65,7 +66,7 @@ async def channels_callback(ack: AsyncAck, body, client: AsyncWebClient):
                 channel=user_id,
                 icon_emoji=language["icon_emoji"],
                 username=language["display_name"],
-                text=language["setup_failed"]["text"].format(channel),
+                text=lang["setup_failed"]["text"].format(channel),
                 blocks=blocks,
             )
 
@@ -75,8 +76,8 @@ async def channels_callback(ack: AsyncAck, body, client: AsyncWebClient):
                 channel=channel,
                 icon_emoji=language["icon_emoji"],
                 username=language["display_name"],
-                text=language["disabled"]["text"],
-                blocks=language["disabled"]["blocks"],
+                text=lang["disabled"]["text"],
+                blocks=lang["disabled"]["blocks"],
             )
         except Exception as e:
             logging.error(
@@ -106,10 +107,11 @@ async def settings_callback(ack: AsyncAck, body, client: AsyncWebClient):
 
     if user.language != language:
         await env.db.user.update(where={"id": user_id}, data={"language": language})
-
+        await ack()
+        lang = LANGUAGES.get(language, LANGUAGES["dog"])
         await client.chat_postMessage(
-            icon_emoji=language["icon_emoji"],
-            username=language["display_name"],
+            icon_emoji=lang["icon_emoji"],
+            username=lang["display_name"],
             channel=user_id,
             text=f"I'm now going to talk like a {language}",
         )
@@ -125,7 +127,8 @@ async def settings_callback(ack: AsyncAck, body, client: AsyncWebClient):
             user_id=user_id, view=await generate_home(user_id)
         )
 
-    language = LANGUAGES.get(user.language, LANGUAGES["dog"])["utils.slack"]
+    language = LANGUAGES.get(user.language, LANGUAGES["dog"])
+    lang = language["utils.slack"]
 
     await env.db.user.update(
         where={"id": user_id},
@@ -143,8 +146,8 @@ async def settings_callback(ack: AsyncAck, body, client: AsyncWebClient):
         channel=user_id,
         icon_emoji=language["icon_emoji"],
         username=language["display_name"],
-        text=language["verification_sent"]["text"],
-        blocks=language["verification_sent"]["blocks"],
+        text=lang["verification_sent"]["text"],
+        blocks=lang["verification_sent"]["blocks"],
     )
 
     await ack()
