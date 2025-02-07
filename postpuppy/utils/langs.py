@@ -272,7 +272,7 @@ LANGUAGES = {
         "views.home": {
             "heading": ":neocat_box: Correspondence Kitty",
             "description": "hai! i'm your friendly kitty who loves post nya~! i can help you keep track of your shipments from Hack Club :3\n\nyou haven't set up your viewer URL yet, please do so in the settings!",
-            "error_heading": ":neocat_notice: Correspondance Kitty",
+            "error_heading": ":neocat_notice: Correspondence Kitty",
             "error_description": "meow, meow!\noh no! it looks like i can't fetch your shipments right now :c\nplease check your settings and make sure your URL is correct!",
         },
     },
