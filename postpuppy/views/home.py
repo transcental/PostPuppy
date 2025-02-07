@@ -48,7 +48,8 @@ async def generate_home(user_id: str):
             }
 
     url = user_data.viewerUrl
-    language = LANGUAGES.get(user_data.language, LANGUAGES["dog"])["views.home"]
+    language = LANGUAGES.get(user_data.language, LANGUAGES["dog"])
+    lang = language["views.home"]
 
     if not url or not user_data.apiUrl:
         return {
@@ -58,14 +59,14 @@ async def generate_home(user_id: str):
                     "type": "header",
                     "text": {
                         "type": "plain_text",
-                        "text": language["heading"],
+                        "text": lang["heading"],
                     },
                 },
                 {
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": language["description"],
+                        "text": lang["description"],
                     },
                 },
                 {
@@ -95,14 +96,14 @@ async def generate_home(user_id: str):
                     "type": "header",
                     "text": {
                         "type": "plain_text",
-                        "text": language["error_heading"],
+                        "text": lang["error_heading"],
                     },
                 },
                 {
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": language["error_description"],
+                        "text": lang["error_description"],
                     },
                 },
                 {"type": "divider"},
@@ -165,13 +166,16 @@ async def generate_home(user_id: str):
         "blocks": [
             {
                 "type": "header",
-                "text": {"type": "plain_text", "text": ":neodog_box: Post Puppy"},
+                "text": {
+                    "type": "plain_text",
+                    "text": f"{language["icon_emoji"]} {language["display_name"]}",
+                },
             },
             {
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": f"Welcome to Post Puppy! Here, you can view all your shipments from Hack Club.\n\nYou have *{total_fulfilled}* fulfilled shipments and *{len(data) - total_fulfilled}* pending shipments!",
+                    "text": f"welcome to {language["display_name"]}! here, you can view all your shipments from Hack Club.\n\nyou have *{total_fulfilled}* fulfilled shipments and *{len(data) - total_fulfilled}* pending shipments :3",
                 },
                 "accessory": {
                     "type": "button",
