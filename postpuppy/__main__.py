@@ -27,7 +27,6 @@ async def main(_app: Starlette):
         yield
     finally:
         await env.db.disconnect()
-        await env.async_close()
 
 
 def start():
