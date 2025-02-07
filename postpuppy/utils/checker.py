@@ -17,6 +17,8 @@ async def check_for_shipment_updates(delay: int = 30):
             if not user.subscribedChannels or not user.apiUrl:
                 continue
 
+            lang = LANGUAGES.get(user.language, LANGUAGES["dog"])
+
             old_shipments = user.shipments if user.shipments else "[{}]"
             new_shipments = json.dumps(await get_shipments(user.id, user.apiUrl))
 
@@ -40,7 +42,7 @@ async def check_for_shipment_updates(delay: int = 30):
 
             try:
                 differences = find_diff(
-                    json.loads(old_shipments), json.loads(new_shipments)
+                    json.loads(old_shipments), json.loads(new_shipments), lang
                 )
             except json.JSONDecodeError as e:
                 logging.error(e)
@@ -65,7 +67,6 @@ async def check_for_shipment_updates(delay: int = 30):
                     is_channel = channel_info.get("channel", {}).get("is_channel")
                 for msg in differences:
                     message = msg["pub_msg"] if is_channel else msg["msg"]
-                    lang = LANGUAGES.get(user.language, LANGUAGES["dog"])
                     try:
                         await env.slack_client.chat_postMessage(
                             channel=channel,

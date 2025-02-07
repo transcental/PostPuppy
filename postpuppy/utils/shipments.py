@@ -1,5 +1,4 @@
 from postpuppy.utils.env import env
-from postpuppy.utils.langs import LANGUAGES
 
 
 async def get_shipments(
@@ -45,7 +44,7 @@ async def get_shipments(
         return [{}]
 
 
-def find_diff(old: list[dict], new: list[dict]):
+def find_diff(old: list[dict], new: list[dict], lang: dict[str, list[dict] | str]):
     diffs = []
     old = old or []
     new = new or []
@@ -54,7 +53,6 @@ def find_diff(old: list[dict], new: list[dict]):
 
     all_ids = set(old_shipments.keys()).union(new_shipments.keys())
 
-    lang = LANGUAGES["dog"]["utils.shipments"]
     for shipment_id in all_ids:
         msg = ""
         pub_msg = ""
