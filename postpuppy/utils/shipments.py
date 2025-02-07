@@ -1,6 +1,7 @@
 import aiohttp
 
 from postpuppy.utils.env import env
+from postpuppy.utils.langs import LANGUAGES
 
 
 async def get_shipments(
@@ -55,7 +56,7 @@ def find_diff(old: list[dict], new: list[dict], lang: dict[str, list[dict] | str
     new_shipments = {shipment.get("title"): shipment for shipment in new}
 
     all_ids = set(old_shipments.keys()).union(new_shipments.keys())
-    lang = lang.get("utils.checker", lang.get("dog")["utils.checker"])
+    lang = lang.get("utils.checker", LANGUAGES.get("dog")["utils.checker"])
 
     for shipment_id in all_ids:
         msg = ""
