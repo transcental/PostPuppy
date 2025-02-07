@@ -83,8 +83,9 @@ async def generate_home(user_id: str):
         }
 
     try:
-        async with aiohttp.ClientSession().get(user_data.apiUrl) as response:
-            data = await response.json()
+        async with aiohttp.ClientSession() as session:
+            async with session.get(user_data.apiUrl) as response:
+                data = await response.json()
     except Exception as e:
         logging.error(e)
         return {

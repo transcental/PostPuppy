@@ -7,9 +7,10 @@ async def get_shipments(
     user_id: str, api_url: str, handle_error: bool = True
 ) -> list[dict]:
     try:
-        async with aiohttp.ClientSession().get(api_url) as response:
-            data = await response.json()
-            return data or [{}]
+        async with aiohttp.ClientSession() as session:
+            async with session.get(api_url) as response:
+                data = await response.json()
+                return data or [{}]
     except Exception as e:
         if handle_error:
             await env.slack_client.chat_postMessage(
