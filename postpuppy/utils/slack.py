@@ -105,6 +105,11 @@ async def settings_callback(ack: AsyncAck, body, client: AsyncWebClient):
             {"response_action": "errors", "errors": {"email": "User not found"}}
         )
 
+    if not email:
+        return await ack(
+            {"response_action": "errors", "errors": {"email": "Email cannot be empty"}}
+        )
+
     if user.language != language:
         await env.db.user.update(where={"id": user_id}, data={"language": language})
         await ack()
@@ -116,16 +121,12 @@ async def settings_callback(ack: AsyncAck, body, client: AsyncWebClient):
             text=f"I'm now going to talk like a {language}",
         )
 
-    if not email:
-        return await ack(
-            {"response_action": "errors", "errors": {"email": "Email cannot be empty"}}
-        )
-
     if user.email == email and user.verifiedEmail:
         await ack()
         return await client.views_publish(
             user_id=user_id, view=await generate_home(user_id)
         )
+    await ack()
 
     language = LANGUAGES.get(user.language, LANGUAGES["dog"])
     lang = language["utils.slack"]
@@ -150,7 +151,6 @@ async def settings_callback(ack: AsyncAck, body, client: AsyncWebClient):
         blocks=lang["verification_sent"]["blocks"],
     )
 
-    await ack()
     return await client.views_publish(
         user_id=user_id, view=await generate_home(user_id)
     )
