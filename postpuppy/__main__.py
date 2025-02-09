@@ -7,7 +7,7 @@ import uvloop
 from dotenv import load_dotenv
 from starlette.applications import Starlette
 
-from postpuppy.utils.checker import check_for_shipment_updates
+from postpuppy.utils.checker import run_shipment_checker
 from postpuppy.utils.env import env
 from postpuppy.utils.logging import send_heartbeat
 
@@ -21,7 +21,7 @@ logging.basicConfig(level="INFO")
 @contextlib.asynccontextmanager
 async def main(_app: Starlette):
     await env.db.connect()
-    asyncio.create_task(check_for_shipment_updates())
+    asyncio.create_task(run_shipment_checker())
     await send_heartbeat(":neodog_verified: Post Puppy is online!")
     try:
         yield
