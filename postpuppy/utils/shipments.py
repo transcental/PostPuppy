@@ -79,7 +79,7 @@ def find_diff(old: list[dict], new: list[dict], language: dict):
                     .replace("_", " ")
                     .title(),
                 ),
-                new_shipment.get("description", "- unknown contents"),
+                "\n- ".join(new_shipment.get("description", [])),
             )
         else:
             # shipment was updated
@@ -102,14 +102,14 @@ def find_diff(old: list[dict], new: list[dict], language: dict):
             ):
                 pub_msg = lang["new_shipment_with_tracking"]["pub_msg"].format(
                     new_shipment.get("title", shipment_id),
-                    new_shipment.get("description", "- unknown contents"),
+                    "\n- ".join(new_shipment.get("description", [])),
                 )
 
                 msg = lang["new_shipment_with_tracking"]["msg"].format(
                     new_shipment.get("title", shipment_id),
                     new_shipment.get("tracking_link")
                     or f"https://parcelsapp.com/en/tracking/{new_shipment.get("tracking_number")}",
-                    new_shipment.get("description", "- unknown contents"),
+                    "\n- ".join(new_shipment.get("description", [])),
                 )
 
             elif (
@@ -139,7 +139,7 @@ def find_diff(old: list[dict], new: list[dict], language: dict):
             ) != new_shipment.get("description"):
                 msg = lang["description_updated"].format(
                     new_shipment.get("title", shipment_id),
-                    "\n".join(new_shipment.get("description", "")),
+                    "\n- ".join(new_shipment.get("description", "")),
                 )
 
             else:
