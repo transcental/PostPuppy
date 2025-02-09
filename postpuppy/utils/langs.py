@@ -134,9 +134,9 @@ LANGUAGES = {
         },
         "views.home": {
             "heading": ":neodog_box: Post Puppy",
-            "description": "hai! i'm your friendly puppy who loves post nya~! i can help you keep track of your shipments from Hack Club :3\n\nyou haven't set up your viewer URL yet, please do so in the settings!",
+            "description": "hai! i'm your friendly puppy who loves post nya~! i can help you keep track of your shipments from Hack Club :3\n\nyou haven't set me up yet, please do so in the settings!",
             "error_heading": ":neodog_notice: Post Puppy",
-            "error_description": "arf, arf!\noh no! it looks like i can't fetch your shipments right now :c\nplease check your settings and make sure your URL is correct!",
+            "error_description": "arf, arf!\noh no! it looks like i can't fetch your shipments right now :c\nplease check your settings and make sure your email is correct!",
         },
     },
     "cat": {
@@ -271,9 +271,9 @@ LANGUAGES = {
         },
         "views.home": {
             "heading": ":neocat_box: Correspondence Kitty",
-            "description": "hai! i'm your friendly kitty who loves post nya~! i can help you keep track of your shipments from Hack Club :3\n\nyou haven't set up your viewer URL yet, please do so in the settings!",
+            "description": "hai! i'm your friendly kitty who loves post nya~! i can help you keep track of your shipments from Hack Club :3\n\nyou haven't set me up yet, please do so in the settings!",
             "error_heading": ":neocat_notice: Correspondence Kitty",
-            "error_description": "meow, meow!\noh no! it looks like i can't fetch your shipments right now :c\nplease check your settings and make sure your URL is correct!",
+            "error_description": "meow, meow!\noh no! it looks like i can't fetch your shipments right now :c\nplease check your settings and make sure your email is correct!",
         },
     },
 }

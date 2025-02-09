@@ -16,13 +16,13 @@ async def get_shipments(
         if handle_error:
             await env.slack_client.chat_postMessage(
                 channel=user_id,
-                text=f"Something went wrong when fetching your shipments. Please check that your URL is correct in the settings. If you're sure and this keeps happening, forward this message to <@U054VC2KM9P>\n```{e}```\nError occurred in `utils/shipment.py`.",
+                text=f"Something went wrong when fetching your shipments. Please check that your email is correct in the settings. If you're sure and this keeps happening, forward this message to <@U054VC2KM9P>\n```{e}```\nError occurred in `utils/shipment.py`.",
                 blocks=[
                     {
                         "type": "section",
                         "text": {
                             "type": "mrkdwn",
-                            "text": "Something went wrong when fetching your shipments. Please check that your URL is correct in the settings. If you're sure and this keeps happening, forward this message to <@U054VC2KM9P>",
+                            "text": "Something went wrong when fetching your shipments. Please check that your email is correct in the settings. If you're sure and this keeps happening, forward this message to <@U054VC2KM9P>",
                         },
                         "accessory": {
                             "type": "button",
