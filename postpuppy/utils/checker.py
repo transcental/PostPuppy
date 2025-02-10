@@ -9,7 +9,7 @@ from postpuppy.utils.shipments import find_diff
 from postpuppy.utils.shipments import get_shipments
 
 
-async def run_shipment_checker(delay: int = 60):
+async def run_shipment_checker(delay: int = 300):
     """Runs the checker every `delay` seconds"""
     while True:
         asyncio.create_task(check_for_shipment_updates())
