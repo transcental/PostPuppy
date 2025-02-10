@@ -168,14 +168,14 @@ async def generate_home(user_id: str):
                 "type": "header",
                 "text": {
                     "type": "plain_text",
-                    "text": f"{language["icon_emoji"]} {language["display_name"]}",
+                    "text": f"{language['icon_emoji']} {language['display_name']}",
                 },
             },
             {
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": f"welcome to {language["display_name"]}! here, you can view all your shipments from Hack Club.\n\nyou have *{total_fulfilled}* fulfilled shipments and *{len(data) - total_fulfilled}* pending shipments :3",
+                    "text": f"welcome to {language['display_name']}! here, you can view all your shipments from Hack Club.\n\nyou have *{total_fulfilled}* fulfilled shipments and *{len(data) - total_fulfilled}* pending shipments :3",
                 },
                 "accessory": {
                     "type": "button",
