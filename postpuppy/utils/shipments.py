@@ -108,7 +108,7 @@ def find_diff(old: list[dict], new: list[dict], language: dict):
                 msg = lang["new_shipment_with_tracking"]["msg"].format(
                     new_shipment.get("title", shipment_id),
                     new_shipment.get("tracking_link")
-                    or f"https://parcelsapp.com/en/tracking/{new_shipment.get("tracking_number")}",
+                    or f"https://parcelsapp.com/en/tracking/{new_shipment.get('tracking_number')}",
                     "\n- ".join(new_shipment.get("description", [])),
                 )
 
@@ -120,11 +120,11 @@ def find_diff(old: list[dict], new: list[dict], language: dict):
             ):
                 pub_msg = (
                     f':neodog_laptop_notice: wrrf, wrrf, wrrrrf!! your *"{new_shipment.get("title", shipment_id)}"* can be tracked, arf, arf! '
-                    f'i found a tracking bone for you! it\'s in my  <slack://app?team=T0266FRGM&id={env.slack_app_id}|bed> :3'
+                    f"i found a tracking bone for you! it's in my  <slack://app?team=T0266FRGM&id={env.slack_app_id}|bed> :3"
                 )
                 msg = lang["new_shipment_with_tracking"]["msg"].format(
                     new_shipment.get("tracking_link")
-                    or f"https://parcelsapp.com/en/tracking/{new_shipment.get("tracking_number")}",
+                    or f"https://parcelsapp.com/en/tracking/{new_shipment.get('tracking_number')}",
                     new_shipment.get("title", shipment_id),
                 )
 
