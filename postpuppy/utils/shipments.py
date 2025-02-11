@@ -48,7 +48,7 @@ async def get_shipments(
         return [{}]
 
 
-def find_diff(old: list[dict], new: list[dict], language: dict):
+async def find_diff(old: list[dict], new: list[dict], language: dict):
     diffs = []
     old = old or []
     new = new or []
@@ -141,6 +141,9 @@ def find_diff(old: list[dict], new: list[dict], language: dict):
                     new_shipment.get("title", shipment_id),
                     "\n- ".join(new_shipment.get("description", "")),
                 )
+
+            elif "shipped" in updated_keys and new_shipment.get("shipped"):
+                msg = lang["shipped"].format(new_shipment.get("title", shipment_id))
 
             else:
                 msg = lang["unknown_update"].format(

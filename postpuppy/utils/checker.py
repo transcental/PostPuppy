@@ -47,7 +47,7 @@ async def check_for_shipment_updates():
             continue
 
         try:
-            differences = find_diff(
+            differences = await find_diff(
                 json.loads(old_shipments), json.loads(new_shipments), lang
             )
         except json.JSONDecodeError as e:
