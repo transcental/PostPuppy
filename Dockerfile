@@ -11,5 +11,6 @@ RUN uv sync --frozen
 EXPOSE 3000
 
 ENV PATH="/app/.venv/bin:$PATH"
+RUN prisma generate
 
 CMD ["postpuppy"]
