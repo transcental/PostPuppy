@@ -278,7 +278,7 @@ LANGUAGES = {
             "error_description": "meow, meow!\noh no! it looks like i can't fetch your shipments right now :c\nplease check your settings and make sure your email is correct!",
         },
     },
-    "Protogen": {
+    "protogen": {
         "display_name": "Package Protogen",
         "icon_emoji": ":protogen_box:",
         "utils.checker": {
