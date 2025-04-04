@@ -111,7 +111,9 @@ async def settings_callback(ack: AsyncAck, body, client: AsyncWebClient):
         )
 
     if user.language != language:
-        await env.db.user.update(where={"id": user_id}, data={"language": language})
+        user = await env.db.user.update(
+            where={"id": user_id}, data={"language": language}
+        )
         await ack()
         lang = LANGUAGES.get(language, LANGUAGES["dog"])
         await client.chat_postMessage(
@@ -119,6 +121,12 @@ async def settings_callback(ack: AsyncAck, body, client: AsyncWebClient):
             username=lang["display_name"],
             channel=user_id,
             text=f"I'm now going to talk like a {language}",
+        )
+
+    if not user:
+        # this should never happen
+        return await ack(
+            {"response_action": "errors", "errors": {"email": "User not found"}}
         )
 
     if user.email == email and user.verifiedEmail:
