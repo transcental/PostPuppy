@@ -26,6 +26,7 @@ async def send_verification_link(user_id: str, email: str, language: dict):
                 "sender": language["sender"],
             },
         },
+        headers={"Authorization": f"Bearer {env.loops_api_key}"},
     ) as res:
         if res.status != 200:
             await send_heartbeat(
