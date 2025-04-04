@@ -278,4 +278,142 @@ LANGUAGES = {
             "error_description": "meow, meow!\noh no! it looks like i can't fetch your shipments right now :c\nplease check your settings and make sure your email is correct!",
         },
     },
+    "protogen": {
+        "display_name": "Package Protogen",
+        "icon_emoji": ":protogen_box:",
+        "utils.checker": {
+            "cant_send": {
+                "text": "haiii :3\nlooks like i can't send to channel <#{}>, please make sure i'm in the channel uwu",
+                "blocks": [
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": "haiii :3\nlooks like i can't send to <#{}>, please make sure you added me to the channel uwu :3",
+                        },
+                    },
+                    {
+                        "type": "context",
+                        "elements": [
+                            {
+                                "type": "mrkdwn",
+                                "text": "_beep, boooooop (sad protogen noises)_",
+                            }
+                        ],
+                    },
+                ],
+            }
+        },
+        "utils.shipments": {
+            "deleted_shipment": ':protogen_sob: _beep beep_~ order of *"{}"* has been cancelled :c i hope that\'s okay master! _beep, beep!_',
+            "new_shipment": ':protogen_box: _beep beep_~ your package, *"{}"*, is on its way, boop! i found these fancy terms, not sure what it means though, _boop_! _({}!)_\noh, and this is what\'s inside!\n{}',
+            "new_shipment_with_tracking": {
+                "pub_msg": f':protogen_laptop_notice: "_beep!_ your *"{{}}"*, is on its way, _wag wag_! and guess what, fren! you can track it too, _tail wags_! visit my <slack://app?team=T0266FRGM&id={env.slack_app_id}|bed> to see where it\'s at, _beep beep!!_ 🐾\npsst, it has this stuff inside!\n{{}}',
+                "msg": ':protogen_laptop_notice: _beep! beep!_ your *"{}"* is on its way, _wag wag_! i think there\'s a handful of tracking ram on my pillow\n<{}|throw ram>\na little birdy told me it has these things inside\n{}',
+            },
+            "updated_shipment_with_tracking": {
+                "pub_msg": f':protogen_laptop_notice: _beep, beep, boooop!!_ your *"{{}}"* can be tracked, beep, beep!\ni found some tracking ram for you! it\'s in my <slack://app?team=T0266FRGM&id={env.slack_app_id}|bed> :3',
+                "msg": ':protogen_laptop_notice: _beep, beep!!_ i found some <{}|tracking ram> for your *"{}"* on my pillow! \n_beep, beep_',
+            },
+            "shipped": ':neodog_verified: _beep, boop!_ your "{}" has been shipped! :3',
+            "type_text_updated": ':protogen_notice: hey hey hey hey hey!!!! frien, it looks like your *"{}"* is now {}! :3',
+            "description_updated": ':protogen_notice: woah, buddy! your *"{}"* has been updated to {}!!!!\nthat\'s amazing :D',
+            "unknown_update": ':protogen_notice: sowwy, idk what happened, but your *"{}"* has been updated!!! _(excited beeping)_',
+        },
+        "utils.slack": {
+            "setup": "Beep, beep, boop!!!! beep!\n_hai! i'm watching your shipments for you now :3_",
+            "setup_failed": {
+                "text": "haiii :3\nlooks like i can't send to channel <#{}>, please make sure i'm in the channel uwu",
+                "blocks": [
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": "haiii :3\nlooks like i can't send to <#{}>, please make sure you added me to the channel uwu :3",
+                        },
+                    },
+                    {
+                        "type": "context",
+                        "elements": [
+                            {
+                                "type": "mrkdwn",
+                                "text": "_beep, boooooop (sad protogen noises)_",
+                            }
+                        ],
+                    },
+                ],
+            },
+            "disabled": {
+                "text": ":protogen_sob: i'm not watching your shipments anymore :c\n_beep, boooooop (sad protogen noises)_",
+                "blocks": [
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": ":protogen_sob: _beep! beep!_ i'm not watching your shipments anymore :c",
+                        },
+                    },
+                    {
+                        "type": "context",
+                        "elements": [
+                            {
+                                "type": "mrkdwn",
+                                "text": "_beep, boooooop (sad protogen noises)_",
+                            }
+                        ],
+                    },
+                ],
+            },
+            "verification_sent": {
+                "text": "i've sent you an email with a link to verify your email address! pwease check your inbox and click the link :3",
+                "blocks": [
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": "i've sent you an email with a link to verify your email address! pwease check your inbox and click the link :3",
+                        },
+                    },
+                    {
+                        "type": "context",
+                        "elements": [
+                            {
+                                "type": "mrkdwn",
+                                "text": "_wags tail excitedly at all those ships_",
+                            }
+                        ],
+                    },
+                ],
+            },
+        },
+        "utils.starlette": {
+            "verified_slack": {
+                "text": "Your email has been verified! You can now view your shipments",
+                "blocks": [
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": "Your email has been verified! You can now view your shipments",
+                        },
+                    },
+                    {
+                        "type": "context",
+                        "elements": [
+                            {
+                                "type": "mrkdwn",
+                                "text": "_wags tail excitedly at all those ships_",
+                            }
+                        ],
+                    },
+                ],
+            }
+        },
+        "views.home": {
+            "heading": ":protogen_box: Package Protogen",
+            "description": "hai! i'm your friendly protogen who loves packages nya~! i can help you keep track of your shipments from Hack Club :3\n\nyou haven't set me up yet, please do so in the settings!",
+            "error_heading": ":protogen_notice: Package Protogen",
+            "error_description": "_beep, beep!_\noh no! it looks like i can't fetch your shipments right now :c\nplease check your settings and make sure your email is correct!",
+        },
+    },
 }
