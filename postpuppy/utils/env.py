@@ -1,6 +1,6 @@
 import os
-from smtplib import SMTP
 
+from aiohttp import ClientSession
 from dotenv import load_dotenv
 from slack_sdk.web.async_client import AsyncWebClient
 
@@ -24,12 +24,11 @@ class Environment:
 
         self.port = int(os.environ.get("PORT", 3000))
 
-        self.smtp_server = os.environ.get("SMTP_SERVER", "unset")
-        self.smtp_port = int(os.environ.get("SMTP_PORT", 587))
-        self.smtp_sender = os.environ.get("SMTP_SENDER", "unset")
-        self.smtp_passowrd = os.environ.get("SMTP_PASSWORD", "unset")
+        self.loops_transactional_id = os.environ.get("LOOPS_TRANSACTIONAL_ID", "unset")
+        self.loops_api_key = os.environ.get("LOOPS_API_KEY", "unset")
 
         self.domain = os.environ.get("DOMAIN", "unset")
+        self.aiohttp_session: ClientSession
 
         unset = [key for key, value in self.__dict__.items() if value == "unset"]
 
@@ -39,19 +38,6 @@ class Environment:
         self.db = Prisma()
 
         self.slack_client = AsyncWebClient(token=self.slack_bot_token)
-        self.smtp_client = SMTP(self.smtp_server, self.smtp_port)
-        self.smtp_logged_in = False
-
-    def smtp_login(self):
-        if not self.smtp_logged_in:
-            self.smtp_client.starttls()
-            self.smtp_client.login(self.smtp_sender, self.smtp_passowrd)
-            self.smtp_logged_in = True
-
-    def smtp_logout(self):
-        if self.smtp_logged_in:
-            self.smtp_client.quit()
-            self.smtp_logged_in = False
 
 
 env = Environment()

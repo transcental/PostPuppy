@@ -1,6 +1,5 @@
 from datetime import datetime
 
-import aiohttp
 from slack_bolt.adapter.starlette.async_handler import AsyncSlackRequestHandler
 from slack_sdk.errors import SlackApiError
 from starlette.applications import Starlette
@@ -25,12 +24,13 @@ async def endpoint(req: Request):
 async def health(req: Request):
     res = {}
     try:
-        async with aiohttp.ClientSession() as session:
-            async with session.get("https://shipment-viewer.hackclub.com") as resp:
-                if resp.status == 200:
-                    res["shipment_viewer_online"] = True
-                else:
-                    res["shipment_viewer_online"] = False
+        async with env.aiohttp_session.get(
+            "https://shipment-viewer.hackclub.com"
+        ) as resp:
+            if resp.status == 200:
+                res["shipment_viewer_online"] = True
+            else:
+                res["shipment_viewer_online"] = False
     except Exception:
         res["shipment_viewer_online"] = False
 

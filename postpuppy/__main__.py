@@ -2,6 +2,7 @@ import asyncio
 import contextlib
 import logging
 
+import aiohttp
 import uvicorn
 import uvloop
 from dotenv import load_dotenv
@@ -20,13 +21,15 @@ logging.basicConfig(level="INFO")
 
 @contextlib.asynccontextmanager
 async def main(_app: Starlette):
-    await env.db.connect()
-    asyncio.create_task(run_shipment_checker())
-    await send_heartbeat(":neodog_verified: Post Puppy is online!")
-    try:
-        yield
-    finally:
-        await env.db.disconnect()
+    async with aiohttp.ClientSession() as session:
+        env.aiohttp_session = session
+        await env.db.connect()
+        asyncio.create_task(run_shipment_checker())
+        await send_heartbeat(":neodog_verified: Post Puppy is online!")
+        try:
+            yield
+        finally:
+            await env.db.disconnect()
 
 
 def start():

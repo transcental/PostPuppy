@@ -5,6 +5,8 @@ LANGUAGES = {
     "dog": {
         "display_name": "Post Puppy",
         "icon_emoji": ":neodog_box:",
+        "noise": "wrrf",
+        "sender": "postpuppy",
         "utils.checker": {
             "cant_send": {
                 "text": "haiii :3\nlooks like i can't send to channel <#{}>, please make sure i'm in the channel uwu",
@@ -143,6 +145,8 @@ LANGUAGES = {
     "cat": {
         "display_name": "Correspondence Kitty",
         "icon_emoji": ":neocat_box:",
+        "noise": "meow",
+        "sender": "correspondencekitty",
         "utils.checker": {
             "cant_send": {
                 "text": "haiii :3\nlooks like i can't send to channel <#{}>, please make sure i'm in the channel uwu",

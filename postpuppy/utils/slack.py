@@ -142,7 +142,7 @@ async def settings_callback(ack: AsyncAck, body, client: AsyncWebClient):
             "apiUrl": None,
         },
     )
-    await send_verification_link(user_id, email)
+    await send_verification_link(user_id, email, language)
     await client.chat_postMessage(
         channel=user_id,
         icon_emoji=language["icon_emoji"],
@@ -166,6 +166,13 @@ async def mail_callback(ack: AsyncAck, body, client: AsyncWebClient):
     await ack()
     user_id = body["user"]["id"]
     user_info = await client.users_info(user=user_id)
-    email = user_info["user"]["profile"]["email"]
 
-    await send_verification_link(user_id, email)
+    email = user_info.get("user", {}).get("profile", {}).get("email")
+    user = await env.db.user.find_first(where={"id": user_id})
+    if not user or not email:
+        return await ack(
+            {"response_action": "errors", "errors": {"email": "User not found"}}
+        )
+    language = LANGUAGES.get(user.language, LANGUAGES["dog"])
+
+    await send_verification_link(user_id, email, language)
