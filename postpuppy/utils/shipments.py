@@ -1,4 +1,5 @@
 import json
+import logging
 
 from postpuppy.utils.env import env
 from postpuppy.utils.langs import LANGUAGES
@@ -59,6 +60,7 @@ async def find_diff(old: list[dict], new: list[dict], language: dict):
     lang = language.get("utils.shipments", LANGUAGES["dog"]["utils.shipments"])
 
     for shipment_id in all_ids:
+        logging.info(f"Checking shipment {shipment_id}")
         msg = ""
         pub_msg = ""
         old_shipment = old_shipments.get(shipment_id, {})
