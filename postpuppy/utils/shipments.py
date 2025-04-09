@@ -64,6 +64,10 @@ async def find_diff(old: list[dict], new: list[dict], language: dict):
         old_shipment = old_shipments.get(shipment_id, {})
         new_shipment = new_shipments.get(shipment_id, {})
 
+        new_desc = new_shipment.get("description", "")
+        if type(new_desc) is list:
+            new_desc = "\n- ".join(new_shipment.get("description", []))
+
         if old_shipment and not new_shipment:
             # shipment was removed
             msg = lang["deleted_shipment"].format(
@@ -86,7 +90,7 @@ async def find_diff(old: list[dict], new: list[dict], language: dict):
                     .replace("_", " ")
                     .title(),
                 ),
-                "\n- ".join(new_shipment.get("description", [])),
+                new_desc,
             )
         else:
             # shipment was updated
@@ -108,15 +112,14 @@ async def find_diff(old: list[dict], new: list[dict], language: dict):
                 "tracking_number" in updated_keys or "tracking_link" in updated_keys
             ):
                 pub_msg = lang["new_shipment_with_tracking"]["pub_msg"].format(
-                    new_shipment.get("title", shipment_id),
-                    "\n- ".join(new_shipment.get("description", [])),
+                    new_shipment.get("title", shipment_id), new_desc
                 )
 
                 msg = lang["new_shipment_with_tracking"]["msg"].format(
                     new_shipment.get("title", shipment_id),
                     new_shipment.get("tracking_link")
                     or f"https://parcelsapp.com/en/tracking/{new_shipment.get('tracking_number')}",
-                    "\n- ".join(new_shipment.get("description", [])),
+                    new_desc,
                 )
 
             elif (
@@ -145,8 +148,7 @@ async def find_diff(old: list[dict], new: list[dict], language: dict):
                 "description"
             ) != new_shipment.get("description"):
                 msg = lang["description_updated"].format(
-                    new_shipment.get("title", shipment_id),
-                    "\n- ".join(new_shipment.get("description", "")),
+                    new_shipment.get("title", shipment_id), new_desc
                 )
 
             elif "shipped" in updated_keys and new_shipment.get("shipped"):
