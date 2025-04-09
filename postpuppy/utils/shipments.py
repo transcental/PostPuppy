@@ -1,8 +1,7 @@
-import json
-
+# import json
 from postpuppy.utils.env import env
 from postpuppy.utils.langs import LANGUAGES
-from postpuppy.utils.logging import send_heartbeat
+# from postpuppy.utils.logging import send_heartbeat
 
 
 async def get_shipments(
@@ -75,13 +74,13 @@ async def find_diff(old: list[dict], new: list[dict], language: dict):
             )
         elif new_shipment and not old_shipment:
             # shipment was created
-            await send_heartbeat(
-                "New shipment found",
-                [
-                    f"```{json.dumps(old_shipment, indent=2)}```",
-                    f"```{json.dumps(new_shipment, indent=2)}```",
-                ],
-            )
+            # await send_heartbeat(
+            #     "New shipment found",
+            #     [
+            #         f"```{json.dumps(old_shipment, indent=2)}```",
+            #         f"```{json.dumps(new_shipment, indent=2)}```",
+            #     ],
+            # )
             msg = lang["new_shipment"].format(
                 new_shipment.get("title", shipment_id),
                 new_shipment.get(

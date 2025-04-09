@@ -29,7 +29,7 @@ async def check_for_shipment_updates():
         new_shipments = json.dumps(await get_shipments(user.id, user.apiUrl))
 
         if new_shipments == old_shipments:
-            await send_heartbeat(f"{user.id}: No changes in shipments. Skipping.")
+            # await send_heartbeat(f"{user.id}: No changes in shipments. Skipping.")
             continue
 
         if new_shipments == "[{}]":
