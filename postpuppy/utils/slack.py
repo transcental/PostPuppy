@@ -29,7 +29,7 @@ async def mention_callback(ack: AsyncAck, event, client: AsyncWebClient):
     text = random.choice(lang["mention"])
 
     await client.chat_postMessage(
-        channel=user_id,
+        channel=event["channel"],
         ts=event["ts"],
         icon_emoji=language["icon_emoji"],
         username=language["display_name"],
