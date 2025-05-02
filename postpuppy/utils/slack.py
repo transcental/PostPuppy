@@ -15,9 +15,9 @@ app = AsyncApp(token=env.slack_bot_token, signing_secret=env.slack_signing_secre
 
 
 @app.event("app_mention")
-async def mention_callback(ack: AsyncAck, body, client: AsyncWebClient):
+async def mention_callback(ack: AsyncAck, event, client: AsyncWebClient):
     await ack()
-    user_id = body["user"]["id"]
+    user_id = event["user"]
     user = await env.db.user.find_first(where={"id": user_id})
     if not user:
         language = LANGUAGES["dog"]
@@ -27,9 +27,10 @@ async def mention_callback(ack: AsyncAck, body, client: AsyncWebClient):
         lang = language["utils.slack"]
 
     text = random.choice(lang["mention"])
+
     await client.chat_postMessage(
         channel=user_id,
-        ts=body["ts"],
+        ts=event["ts"],
         icon_emoji=language["icon_emoji"],
         username=language["display_name"],
         text=text,
