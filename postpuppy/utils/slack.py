@@ -30,7 +30,7 @@ async def mention_callback(ack: AsyncAck, event, client: AsyncWebClient):
 
     await client.chat_postMessage(
         channel=event["channel"],
-        ts=event["ts"],
+        thread_ts=event["ts"],
         icon_emoji=language["icon_emoji"],
         username=language["display_name"],
         text=text,
