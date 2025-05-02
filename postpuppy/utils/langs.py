@@ -68,6 +68,9 @@ LANGUAGES = {
                         ],
                     },
                 ],
+                "mention": [
+                    "wrrf, wrrf, wrrf, wrrf, WRRF, WHAT YA WAKING ME UP FOR?! :neodog_angry:"
+                ],
             },
             "disabled": {
                 "text": ":neodog_sob: i'm not watching your shipments anymore :c\n_wrrf, wrrrrrrf (sad barking noises)_",
@@ -207,6 +210,9 @@ LANGUAGES = {
                             }
                         ],
                     },
+                ],
+                "mention": [
+                    "maow, mrrow, mrrow, mrrow, MEOW, MEEEEOWWWWWW WHAT YA WAKING ME UP FOR?!! :neocat_angry:"
                 ],
             },
             "disabled": {

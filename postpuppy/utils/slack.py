@@ -1,4 +1,5 @@
 import logging
+import random
 
 from slack_bolt.async_app import AsyncAck
 from slack_bolt.async_app import AsyncApp
@@ -11,6 +12,28 @@ from postpuppy.views.home import generate_home
 from postpuppy.views.settings import generate_settings
 
 app = AsyncApp(token=env.slack_bot_token, signing_secret=env.slack_signing_secret)
+
+
+@app.event("app_mention")
+async def mention_callback(ack: AsyncAck, body, client: AsyncWebClient):
+    await ack()
+    user_id = body["user"]["id"]
+    user = await env.db.user.find_first(where={"id": user_id})
+    if not user:
+        language = LANGUAGES["dog"]
+        lang = language["utils.slack"]
+    else:
+        language = LANGUAGES.get(user.language, LANGUAGES["dog"])
+        lang = language["utils.slack"]
+
+    text = random.choice(lang["mention"])
+    await client.chat_postMessage(
+        channel=user_id,
+        ts=body["ts"],
+        icon_emoji=language["icon_emoji"],
+        username=language["display_name"],
+        text=text,
+    )
 
 
 @app.event("app_home_opened")
