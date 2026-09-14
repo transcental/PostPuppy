@@ -1,8 +1,7 @@
 import logging
 import random
 
-from slack_bolt.async_app import AsyncAck
-from slack_bolt.async_app import AsyncApp
+from slack_bolt.async_app import AsyncAck, AsyncApp
 from slack_sdk.web.async_client import AsyncWebClient
 
 from postpuppy.utils.emails import send_verification_link

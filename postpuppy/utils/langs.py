@@ -1,6 +1,5 @@
 from postpuppy.utils.env import env
 
-
 LANGUAGES = {
     "dog": {
         "display_name": "Post Puppy",
