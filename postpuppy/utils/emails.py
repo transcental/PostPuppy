@@ -1,8 +1,7 @@
 import asyncio
 import binascii
 import os
-from datetime import datetime
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 from postpuppy.utils.env import env
 from postpuppy.utils.logging import send_heartbeat
