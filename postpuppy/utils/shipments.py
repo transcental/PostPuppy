@@ -1,6 +1,7 @@
 # import json
 from postpuppy.utils.env import env
 from postpuppy.utils.langs import LANGUAGES
+
 # from postpuppy.utils.logging import send_heartbeat
 
 
@@ -95,9 +96,7 @@ async def find_diff(old: list[dict], new: list[dict], language: dict):
             # shipment was updated
             updated_keys = []
             for key in old_shipment:
-                if key not in new_shipment:
-                    updated_keys.append(key)
-                elif old_shipment[key] != new_shipment[key]:
+                if key not in new_shipment or old_shipment[key] != new_shipment[key]:
                     updated_keys.append(key)
 
             for key in new_shipment:
