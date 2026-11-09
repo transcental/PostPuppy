@@ -5,8 +5,7 @@ import logging
 from postpuppy.utils.env import env
 from postpuppy.utils.langs import LANGUAGES
 from postpuppy.utils.logging import send_heartbeat
-from postpuppy.utils.shipments import find_diff
-from postpuppy.utils.shipments import get_shipments
+from postpuppy.utils.shipments import find_diff, get_shipments
 
 
 async def run_shipment_checker(delay: int = 600):
