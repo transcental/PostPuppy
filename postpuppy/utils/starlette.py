@@ -4,8 +4,7 @@ from slack_bolt.adapter.starlette.async_handler import AsyncSlackRequestHandler
 from slack_sdk.errors import SlackApiError
 from starlette.applications import Starlette
 from starlette.requests import Request
-from starlette.responses import JSONResponse
-from starlette.responses import PlainTextResponse
+from starlette.responses import JSONResponse, PlainTextResponse
 from starlette.routing import Route
 
 from postpuppy.__main__ import main
